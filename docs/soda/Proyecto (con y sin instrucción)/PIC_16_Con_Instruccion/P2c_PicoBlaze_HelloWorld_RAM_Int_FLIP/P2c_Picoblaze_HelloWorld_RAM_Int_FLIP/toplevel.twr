@@ -1,0 +1,640 @@
+--------------------------------------------------------------------------------
+Release 14.7 Trace  (nt64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+C:\Xilinx\14.7\ISE_DS\ISE\bin\nt64\unwrapped\trce.exe -intstyle ise -v 3 -s 4
+-n 3 -fastpaths -xml toplevel.twx toplevel.ncd -o toplevel.twr toplevel.pcf
+-ucf PicoBlaze_s3estarter.ucf
+
+Design file:              toplevel.ncd
+Physical constraint file: toplevel.pcf
+Device,package,speed:     xc3s500e,fg320,-4 (PRODUCTION 1.27 2013-10-13)
+Report level:             verbose report
+
+Environment Variable      Effect 
+--------------------      ------ 
+NONE                      No environment variables were set
+--------------------------------------------------------------------------------
+
+INFO:Timing:3412 - To improve timing, see the Timing Closure User Guide (UG612).
+INFO:Timing:2752 - To get complete path coverage, use the unconstrained paths 
+   option. All paths that are not constrained will be reported in the 
+   unconstrained paths section(s) of the report.
+INFO:Timing:3339 - The clock-to-out numbers in this timing report are based on 
+   a 50 Ohm transmission line loading model.  For the details of this model, 
+   and for more information on accounting for different loading conditions, 
+   please see the device datasheet.
+INFO:Timing:3390 - This architecture does not support a default System Jitter 
+   value, please add SYSTEM_JITTER constraint to the UCF to modify the Clock 
+   Uncertainty calculation.
+INFO:Timing:3389 - This architecture does not support 'Discrete Jitter' and 
+   'Phase Error' calculations, these terms will be zero in the Clock 
+   Uncertainty calculation.  Please make appropriate modification to 
+   SYSTEM_JITTER to account for the unsupported Discrete Jitter and Phase 
+   Error.
+
+================================================================================
+Timing constraint: NET "clk_BUFGP/IBUFG" PERIOD = 20 ns HIGH 40%;
+For more information, see Period Analysis in the Timing Closure User Guide (UG612).
+
+ 39209 paths analyzed, 1438 endpoints analyzed, 0 failing endpoints
+ 0 timing errors detected. (0 setup errors, 0 hold errors, 0 component switching limit errors)
+ Minimum period is  15.330ns.
+--------------------------------------------------------------------------------
+
+Paths for end point processor/zero_logic/zero_flag (SLICE_X28Y23.F4), 1911 paths
+--------------------------------------------------------------------------------
+Slack (setup path):     4.670ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_25 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      15.312ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.018ns (0.083 - 0.101)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_25 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X28Y18.XQ      Tcko                  0.592   program/dout<25>
+                                                       program/dout_25
+    SLICE_X37Y33.G4      net (fanout=9)        2.566   program/dout<25>
+    SLICE_X37Y33.Y       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000_SW0
+    SLICE_X37Y33.F4      net (fanout=1)        0.023   processor/i_mix_cmp_eq0000_SW0/O
+    SLICE_X37Y33.X       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000
+    SLICE_X26Y28.G1      net (fanout=17)       2.348   processor/i_mix
+    SLICE_X26Y28.Y       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or00000
+    SLICE_X26Y28.F4      net (fanout=1)        0.023   processor/ALU_result_13_or00000/O
+    SLICE_X26Y28.X       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or000032
+    SLICE_X27Y24.F2      net (fanout=2)        0.664   processor/ALU_result_13_or000032
+    SLICE_X27Y24.X       Tilo                  0.704   N133
+                                                       processor/ALU_result_13_or000077_SW1
+    SLICE_X39Y28.F2      net (fanout=1)        1.592   N133
+    SLICE_X39Y28.X       Tilo                  0.704   processor/ALU_result<13>
+                                                       processor/ALU_result_13_or0000105
+    SLICE_X28Y29.F4      net (fanout=2)        0.994   processor/ALU_result<13>
+    SLICE_X28Y29.X       Tilo                  0.759   processor/zero_logic/next_zero_flag18
+                                                       processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.F4      net (fanout=1)        0.525   processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     15.312ns (6.577ns logic, 8.735ns route)
+                                                       (43.0% logic, 57.0% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     5.070ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_23 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.917ns (Levels of Logic = 7)
+  Clock Path Skew:      -0.013ns (0.083 - 0.096)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_23 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X26Y16.XQ      Tcko                  0.592   program/dout<23>
+                                                       program/dout_23
+    SLICE_X37Y33.F1      net (fanout=68)       2.898   program/dout<23>
+    SLICE_X37Y33.X       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000
+    SLICE_X26Y28.G1      net (fanout=17)       2.348   processor/i_mix
+    SLICE_X26Y28.Y       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or00000
+    SLICE_X26Y28.F4      net (fanout=1)        0.023   processor/ALU_result_13_or00000/O
+    SLICE_X26Y28.X       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or000032
+    SLICE_X27Y24.F2      net (fanout=2)        0.664   processor/ALU_result_13_or000032
+    SLICE_X27Y24.X       Tilo                  0.704   N133
+                                                       processor/ALU_result_13_or000077_SW1
+    SLICE_X39Y28.F2      net (fanout=1)        1.592   N133
+    SLICE_X39Y28.X       Tilo                  0.704   processor/ALU_result<13>
+                                                       processor/ALU_result_13_or0000105
+    SLICE_X28Y29.F4      net (fanout=2)        0.994   processor/ALU_result<13>
+    SLICE_X28Y29.X       Tilo                  0.759   processor/zero_logic/next_zero_flag18
+                                                       processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.F4      net (fanout=1)        0.525   processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     14.917ns (5.873ns logic, 9.044ns route)
+                                                       (39.4% logic, 60.6% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     5.345ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_22 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.633ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.022ns (0.106 - 0.128)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_22 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X34Y18.XQ      Tcko                  0.592   program/dout<22>
+                                                       program/dout_22
+    SLICE_X37Y33.G3      net (fanout=66)       1.887   program/dout<22>
+    SLICE_X37Y33.Y       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000_SW0
+    SLICE_X37Y33.F4      net (fanout=1)        0.023   processor/i_mix_cmp_eq0000_SW0/O
+    SLICE_X37Y33.X       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000
+    SLICE_X26Y28.G1      net (fanout=17)       2.348   processor/i_mix
+    SLICE_X26Y28.Y       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or00000
+    SLICE_X26Y28.F4      net (fanout=1)        0.023   processor/ALU_result_13_or00000/O
+    SLICE_X26Y28.X       Tilo                  0.759   processor/ALU_result_13_or000032
+                                                       processor/ALU_result_13_or000032
+    SLICE_X27Y24.F2      net (fanout=2)        0.664   processor/ALU_result_13_or000032
+    SLICE_X27Y24.X       Tilo                  0.704   N133
+                                                       processor/ALU_result_13_or000077_SW1
+    SLICE_X39Y28.F2      net (fanout=1)        1.592   N133
+    SLICE_X39Y28.X       Tilo                  0.704   processor/ALU_result<13>
+                                                       processor/ALU_result_13_or0000105
+    SLICE_X28Y29.F4      net (fanout=2)        0.994   processor/ALU_result<13>
+    SLICE_X28Y29.X       Tilo                  0.759   processor/zero_logic/next_zero_flag18
+                                                       processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.F4      net (fanout=1)        0.525   processor/zero_logic/next_zero_flag18
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     14.633ns (6.577ns logic, 8.056ns route)
+                                                       (44.9% logic, 55.1% route)
+
+--------------------------------------------------------------------------------
+
+Paths for end point processor/zero_logic/zero_flag (SLICE_X28Y23.F3), 3820 paths
+--------------------------------------------------------------------------------
+Slack (setup path):     5.562ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_15 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.420ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.018ns (0.083 - 0.101)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_15 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X29Y19.YQ      Tcko                  0.587   program/dout<13>
+                                                       program/dout_15
+    SLICE_X32Y23.F4      net (fanout=20)       1.567   program/dout<15>
+    SLICE_X32Y23.X       Tilo                  0.759   processor/mix_group/Y<8>
+                                                       processor/data_registers/bus_width_loop[0].data_register_bit/Mram_rambit.SLICEM_F
+    SLICE_X37Y22.G1      net (fanout=2)        0.508   processor/sY_register<0>
+    SLICE_X37Y22.Y       Tilo                  0.704   inport_cmp_eq000010
+                                                       processor/second_operand<0>1
+    SLICE_X30Y34.G1      net (fanout=68)       2.639   portid<0>
+    SLICE_X30Y34.X       Tif5x                 1.152   N38
+                                                       Mram_RAM18/G
+                                                       Mram_RAM18/F5
+    SLICE_X33Y32.G4      net (fanout=1)        0.348   N38
+    SLICE_X33Y32.Y       Tilo                  0.704   processor/ALU_result_9_or000053
+                                                       processor/ALU_result_8_or000053
+    SLICE_X30Y36.F2      net (fanout=1)        0.634   processor/ALU_result_8_or000053
+    SLICE_X30Y36.X       Tilo                  0.759   processor/ALU_result<8>
+                                                       processor/ALU_result_8_or0000105
+    SLICE_X28Y26.F1      net (fanout=2)        1.041   processor/ALU_result<8>
+    SLICE_X28Y26.X       Tilo                  0.759   processor/zero_logic/next_zero_flag33
+                                                       processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.G3      net (fanout=1)        0.585   processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.Y       Tilo                  0.759   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag73_SW0
+    SLICE_X28Y23.F3      net (fanout=1)        0.023   processor/zero_logic/next_zero_flag73_SW0/O
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     14.420ns (7.075ns logic, 7.345ns route)
+                                                       (49.1% logic, 50.9% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     5.567ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_15 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.415ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.018ns (0.083 - 0.101)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_15 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X29Y19.YQ      Tcko                  0.587   program/dout<13>
+                                                       program/dout_15
+    SLICE_X32Y23.F4      net (fanout=20)       1.567   program/dout<15>
+    SLICE_X32Y23.X       Tilo                  0.759   processor/mix_group/Y<8>
+                                                       processor/data_registers/bus_width_loop[0].data_register_bit/Mram_rambit.SLICEM_F
+    SLICE_X37Y22.G1      net (fanout=2)        0.508   processor/sY_register<0>
+    SLICE_X37Y22.Y       Tilo                  0.704   inport_cmp_eq000010
+                                                       processor/second_operand<0>1
+    SLICE_X30Y34.F1      net (fanout=68)       2.634   portid<0>
+    SLICE_X30Y34.X       Tif5x                 1.152   N38
+                                                       Mram_RAM18/F
+                                                       Mram_RAM18/F5
+    SLICE_X33Y32.G4      net (fanout=1)        0.348   N38
+    SLICE_X33Y32.Y       Tilo                  0.704   processor/ALU_result_9_or000053
+                                                       processor/ALU_result_8_or000053
+    SLICE_X30Y36.F2      net (fanout=1)        0.634   processor/ALU_result_8_or000053
+    SLICE_X30Y36.X       Tilo                  0.759   processor/ALU_result<8>
+                                                       processor/ALU_result_8_or0000105
+    SLICE_X28Y26.F1      net (fanout=2)        1.041   processor/ALU_result<8>
+    SLICE_X28Y26.X       Tilo                  0.759   processor/zero_logic/next_zero_flag33
+                                                       processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.G3      net (fanout=1)        0.585   processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.Y       Tilo                  0.759   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag73_SW0
+    SLICE_X28Y23.F3      net (fanout=1)        0.023   processor/zero_logic/next_zero_flag73_SW0/O
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     14.415ns (7.075ns logic, 7.340ns route)
+                                                       (49.1% logic, 50.9% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     5.578ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_25 (FF)
+  Destination:          processor/zero_logic/zero_flag (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.404ns (Levels of Logic = 9)
+  Clock Path Skew:      -0.018ns (0.083 - 0.101)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_25 to processor/zero_logic/zero_flag
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X28Y18.XQ      Tcko                  0.592   program/dout<25>
+                                                       program/dout_25
+    SLICE_X37Y33.G4      net (fanout=9)        2.566   program/dout<25>
+    SLICE_X37Y33.Y       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000_SW0
+    SLICE_X37Y33.F4      net (fanout=1)        0.023   processor/i_mix_cmp_eq0000_SW0/O
+    SLICE_X37Y33.X       Tilo                  0.704   processor/i_mix
+                                                       processor/i_mix_cmp_eq0000
+    SLICE_X24Y31.G2      net (fanout=17)       1.511   processor/i_mix
+    SLICE_X24Y31.Y       Tilo                  0.759   processor/ALU_result_11_or000032
+                                                       processor/ALU_result_11_or00000
+    SLICE_X24Y31.F3      net (fanout=1)        0.023   processor/ALU_result_11_or00000/O
+    SLICE_X24Y31.X       Tilo                  0.759   processor/ALU_result_11_or000032
+                                                       processor/ALU_result_11_or000032
+    SLICE_X24Y30.BX      net (fanout=2)        0.729   processor/ALU_result_11_or000032
+    SLICE_X24Y30.X       Tbxx                  0.806   N200
+                                                       processor/ALU_result_11_or000077_SW1
+    SLICE_X31Y26.F3      net (fanout=1)        0.846   N200
+    SLICE_X31Y26.X       Tilo                  0.704   processor/ALU_result<11>
+                                                       processor/ALU_result_11_or0000105
+    SLICE_X28Y26.F3      net (fanout=2)        0.660   processor/ALU_result<11>
+    SLICE_X28Y26.X       Tilo                  0.759   processor/zero_logic/next_zero_flag33
+                                                       processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.G3      net (fanout=1)        0.585   processor/zero_logic/next_zero_flag33
+    SLICE_X28Y23.Y       Tilo                  0.759   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag73_SW0
+    SLICE_X28Y23.F3      net (fanout=1)        0.023   processor/zero_logic/next_zero_flag73_SW0/O
+    SLICE_X28Y23.CLK     Tfck                  0.892   processor/zero_logic/zero_flag
+                                                       processor/zero_logic/next_zero_flag101
+                                                       processor/zero_logic/zero_flag
+    -------------------------------------------------  ---------------------------
+    Total                                     14.404ns (7.438ns logic, 6.966ns route)
+                                                       (51.6% logic, 48.4% route)
+
+--------------------------------------------------------------------------------
+
+Paths for end point processor/arithmetic_group/add_sub_module/Y_13 (SLICE_X32Y30.F2), 381 paths
+--------------------------------------------------------------------------------
+Slack (setup path):     5.703ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_15 (FF)
+  Destination:          processor/arithmetic_group/add_sub_module/Y_13 (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      14.281ns (Levels of Logic = 10)
+  Clock Path Skew:      -0.016ns (0.085 - 0.101)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_15 to processor/arithmetic_group/add_sub_module/Y_13
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X29Y19.YQ      Tcko                  0.587   program/dout<13>
+                                                       program/dout_15
+    SLICE_X32Y23.F4      net (fanout=20)       1.567   program/dout<15>
+    SLICE_X32Y23.X       Tilo                  0.759   processor/mix_group/Y<8>
+                                                       processor/data_registers/bus_width_loop[0].data_register_bit/Mram_rambit.SLICEM_F
+    SLICE_X34Y22.G4      net (fanout=2)        0.393   processor/sY_register<0>
+    SLICE_X34Y22.Y       Tilo                  0.759   N91
+                                                       processor/second_operand<0>1_1
+    SLICE_X34Y22.F1      net (fanout=1)        0.439   processor/second_operand<0>1_1/O
+    SLICE_X34Y22.X       Tilo                  0.759   N91
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000_SW0
+    SLICE_X29Y23.G4      net (fanout=1)        0.599   N91
+    SLICE_X29Y23.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<2>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000
+    SLICE_X31Y23.F2      net (fanout=4)        0.523   processor/arithmetic_group/add_sub_module/carry_chain<1>
+    SLICE_X31Y23.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<3>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_3_mux0000
+    SLICE_X31Y31.G1      net (fanout=2)        0.837   processor/arithmetic_group/add_sub_module/carry_chain<3>
+    SLICE_X31Y31.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_5_mux0000
+    SLICE_X31Y31.F4      net (fanout=4)        0.045   processor/arithmetic_group/add_sub_module/carry_chain<5>
+    SLICE_X31Y31.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_7_mux0000
+    SLICE_X29Y33.G1      net (fanout=3)        0.622   processor/arithmetic_group/add_sub_module/carry_chain<7>
+    SLICE_X29Y33.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<11>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_9_mux0000
+    SLICE_X33Y30.G2      net (fanout=5)        1.183   processor/arithmetic_group/add_sub_module/carry_chain<9>
+    SLICE_X33Y30.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<14>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<14>_Result1_SW0
+    SLICE_X32Y30.F2      net (fanout=2)        0.093   N263
+    SLICE_X32Y30.CLK     Tfck                  0.892   processor/arithmetic_group/add_sub_module/Y<13>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<13>_Result1
+                                                       processor/arithmetic_group/add_sub_module/Y_13
+    -------------------------------------------------  ---------------------------
+    Total                                     14.281ns (7.980ns logic, 6.301ns route)
+                                                       (55.9% logic, 44.1% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     6.011ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_20 (FF)
+  Destination:          processor/arithmetic_group/add_sub_module/Y_13 (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      13.978ns (Levels of Logic = 9)
+  Clock Path Skew:      -0.011ns (0.085 - 0.096)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_20 to processor/arithmetic_group/add_sub_module/Y_13
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X27Y16.XQ      Tcko                  0.591   program/dout<20>
+                                                       program/dout_20
+    SLICE_X24Y23.F4      net (fanout=50)       2.159   program/dout<20>
+    SLICE_X24Y23.X       Tilo                  0.759   processor/logical_group/Y<5>
+                                                       processor/arithmetic_group/carry_in_bit1
+    SLICE_X34Y22.F4      net (fanout=1)        0.692   processor/arithmetic_group/carry_in_bit
+    SLICE_X34Y22.X       Tilo                  0.759   N91
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000_SW0
+    SLICE_X29Y23.G4      net (fanout=1)        0.599   N91
+    SLICE_X29Y23.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<2>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000
+    SLICE_X31Y23.F2      net (fanout=4)        0.523   processor/arithmetic_group/add_sub_module/carry_chain<1>
+    SLICE_X31Y23.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<3>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_3_mux0000
+    SLICE_X31Y31.G1      net (fanout=2)        0.837   processor/arithmetic_group/add_sub_module/carry_chain<3>
+    SLICE_X31Y31.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_5_mux0000
+    SLICE_X31Y31.F4      net (fanout=4)        0.045   processor/arithmetic_group/add_sub_module/carry_chain<5>
+    SLICE_X31Y31.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_7_mux0000
+    SLICE_X29Y33.G1      net (fanout=3)        0.622   processor/arithmetic_group/add_sub_module/carry_chain<7>
+    SLICE_X29Y33.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<11>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_9_mux0000
+    SLICE_X33Y30.G2      net (fanout=5)        1.183   processor/arithmetic_group/add_sub_module/carry_chain<9>
+    SLICE_X33Y30.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<14>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<14>_Result1_SW0
+    SLICE_X32Y30.F2      net (fanout=2)        0.093   N263
+    SLICE_X32Y30.CLK     Tfck                  0.892   processor/arithmetic_group/add_sub_module/Y<13>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<13>_Result1
+                                                       processor/arithmetic_group/add_sub_module/Y_13
+    -------------------------------------------------  ---------------------------
+    Total                                     13.978ns (7.225ns logic, 6.753ns route)
+                                                       (51.7% logic, 48.3% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     6.017ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               program/dout_13_1 (FF)
+  Destination:          processor/arithmetic_group/add_sub_module/Y_13 (FF)
+  Requirement:          20.000ns
+  Data Path Delay:      13.964ns (Levels of Logic = 10)
+  Clock Path Skew:      -0.019ns (0.085 - 0.104)
+  Source Clock:         clk_BUFGP rising at 0.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: program/dout_13_1 to processor/arithmetic_group/add_sub_module/Y_13
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X31Y18.YQ      Tcko                  0.587   program/dout_13_1
+                                                       program/dout_13_1
+    SLICE_X32Y23.F3      net (fanout=10)       1.250   program/dout_13_1
+    SLICE_X32Y23.X       Tilo                  0.759   processor/mix_group/Y<8>
+                                                       processor/data_registers/bus_width_loop[0].data_register_bit/Mram_rambit.SLICEM_F
+    SLICE_X34Y22.G4      net (fanout=2)        0.393   processor/sY_register<0>
+    SLICE_X34Y22.Y       Tilo                  0.759   N91
+                                                       processor/second_operand<0>1_1
+    SLICE_X34Y22.F1      net (fanout=1)        0.439   processor/second_operand<0>1_1/O
+    SLICE_X34Y22.X       Tilo                  0.759   N91
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000_SW0
+    SLICE_X29Y23.G4      net (fanout=1)        0.599   N91
+    SLICE_X29Y23.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<2>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_1_mux0000
+    SLICE_X31Y23.F2      net (fanout=4)        0.523   processor/arithmetic_group/add_sub_module/carry_chain<1>
+    SLICE_X31Y23.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<3>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_3_mux0000
+    SLICE_X31Y31.G1      net (fanout=2)        0.837   processor/arithmetic_group/add_sub_module/carry_chain<3>
+    SLICE_X31Y31.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_5_mux0000
+    SLICE_X31Y31.F4      net (fanout=4)        0.045   processor/arithmetic_group/add_sub_module/carry_chain<5>
+    SLICE_X31Y31.X       Tilo                  0.704   processor/arithmetic_group/add_sub_module/carry_chain<7>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_7_mux0000
+    SLICE_X29Y33.G1      net (fanout=3)        0.622   processor/arithmetic_group/add_sub_module/carry_chain<7>
+    SLICE_X29Y33.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<11>
+                                                       processor/arithmetic_group/add_sub_module/carry_chain_9_mux0000
+    SLICE_X33Y30.G2      net (fanout=5)        1.183   processor/arithmetic_group/add_sub_module/carry_chain<9>
+    SLICE_X33Y30.Y       Tilo                  0.704   processor/arithmetic_group/add_sub_module/Y<14>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<14>_Result1_SW0
+    SLICE_X32Y30.F2      net (fanout=2)        0.093   N263
+    SLICE_X32Y30.CLK     Tfck                  0.892   processor/arithmetic_group/add_sub_module/Y<13>
+                                                       processor/arithmetic_group/add_sub_module/Mxor_full_addsub<13>_Result1
+                                                       processor/arithmetic_group/add_sub_module/Y_13
+    -------------------------------------------------  ---------------------------
+    Total                                     13.964ns (7.980ns logic, 5.984ns route)
+                                                       (57.1% logic, 42.9% route)
+
+--------------------------------------------------------------------------------
+
+Hold Paths: NET "clk_BUFGP/IBUFG" PERIOD = 20 ns HIGH 40%;
+--------------------------------------------------------------------------------
+
+Paths for end point processor/basic_control/internal_T_state (SLICE_X40Y13.BY), 1 path
+--------------------------------------------------------------------------------
+Slack (hold path):      1.094ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               processor/basic_control/internal_T_state (FF)
+  Destination:          processor/basic_control/internal_T_state (FF)
+  Requirement:          0.000ns
+  Data Path Delay:      1.094ns (Levels of Logic = 0)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_BUFGP rising at 20.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Minimum Data Path: processor/basic_control/internal_T_state to processor/basic_control/internal_T_state
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X40Y13.YQ      Tcko                  0.522   processor/basic_control/internal_T_state
+                                                       processor/basic_control/internal_T_state
+    SLICE_X40Y13.BY      net (fanout=19)       0.420   processor/basic_control/internal_T_state
+    SLICE_X40Y13.CLK     Tckdi       (-Th)    -0.152   processor/basic_control/internal_T_state
+                                                       processor/basic_control/internal_T_state
+    -------------------------------------------------  ---------------------------
+    Total                                      1.094ns (0.674ns logic, 0.420ns route)
+                                                       (61.6% logic, 38.4% route)
+
+--------------------------------------------------------------------------------
+
+Paths for end point processor/stack_memory/bus_width_loop[2].stack_ram_bit/rambit_2 (SLICE_X32Y9.BY), 1 path
+--------------------------------------------------------------------------------
+Slack (hold path):      1.180ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               processor/prog_count/count_value_2 (FF)
+  Destination:          processor/stack_memory/bus_width_loop[2].stack_ram_bit/rambit_2 (FF)
+  Requirement:          0.000ns
+  Data Path Delay:      1.180ns (Levels of Logic = 0)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_BUFGP rising at 20.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Minimum Data Path: processor/prog_count/count_value_2 to processor/stack_memory/bus_width_loop[2].stack_ram_bit/rambit_2
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X32Y8.XQ       Tcko                  0.474   processor/prog_count/count_value<2>
+                                                       processor/prog_count/count_value_2
+    SLICE_X32Y9.BY       net (fanout=69)       0.554   processor/prog_count/count_value<2>
+    SLICE_X32Y9.CLK      Tckdi       (-Th)    -0.152   processor/stack_memory/bus_width_loop[2].stack_ram_bit/rambit<2>
+                                                       processor/stack_memory/bus_width_loop[2].stack_ram_bit/rambit_2
+    -------------------------------------------------  ---------------------------
+    Total                                      1.180ns (0.626ns logic, 0.554ns route)
+                                                       (53.1% logic, 46.9% route)
+
+--------------------------------------------------------------------------------
+
+Paths for end point processor/interrupt_control/shaddow_carry (SLICE_X26Y21.BY), 1 path
+--------------------------------------------------------------------------------
+Slack (hold path):      1.184ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               processor/carry_logic/carry_flag (FF)
+  Destination:          processor/interrupt_control/shaddow_carry (FF)
+  Requirement:          0.000ns
+  Data Path Delay:      1.180ns (Levels of Logic = 0)
+  Clock Path Skew:      -0.004ns (0.036 - 0.040)
+  Source Clock:         clk_BUFGP rising at 20.000ns
+  Destination Clock:    clk_BUFGP rising at 20.000ns
+  Clock Uncertainty:    0.000ns
+
+  Minimum Data Path: processor/carry_logic/carry_flag to processor/interrupt_control/shaddow_carry
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X29Y20.XQ      Tcko                  0.473   processor/carry_logic/carry_flag
+                                                       processor/carry_logic/carry_flag
+    SLICE_X26Y21.BY      net (fanout=6)        0.555   processor/carry_logic/carry_flag
+    SLICE_X26Y21.CLK     Tckdi       (-Th)    -0.152   processor/interrupt_control/shaddow_carry
+                                                       processor/interrupt_control/shaddow_carry
+    -------------------------------------------------  ---------------------------
+    Total                                      1.180ns (0.625ns logic, 0.555ns route)
+                                                       (53.0% logic, 47.0% route)
+
+--------------------------------------------------------------------------------
+
+Component Switching Limit Checks: NET "clk_BUFGP/IBUFG" PERIOD = 20 ns HIGH 40%;
+--------------------------------------------------------------------------------
+Slack: 17.935ns (period - (min high pulse limit / (high pulse / period)))
+  Period: 20.000ns
+  High pulse: 8.000ns
+  High pulse limit: 0.826ns (Tch)
+  Physical resource: processor/arithmetic_group/carry_out/CLK
+  Logical resource: processor/arithmetic_group/carry_out/CK
+  Location pin: SLICE_X28Y31.CLK
+  Clock network: clk_BUFGP
+--------------------------------------------------------------------------------
+Slack: 17.935ns (period - (min high pulse limit / (high pulse / period)))
+  Period: 20.000ns
+  High pulse: 8.000ns
+  High pulse limit: 0.826ns (Tch)
+  Physical resource: program/dout<3>/CLK
+  Logical resource: program/dout_3/CK
+  Location pin: SLICE_X34Y16.CLK
+  Clock network: clk_BUFGP
+--------------------------------------------------------------------------------
+Slack: 17.935ns (period - (min high pulse limit / (high pulse / period)))
+  Period: 20.000ns
+  High pulse: 8.000ns
+  High pulse limit: 0.826ns (Tch)
+  Physical resource: processor/logical_group/Y<10>/CLK
+  Logical resource: processor/logical_group/Y_10/CK
+  Location pin: SLICE_X36Y27.CLK
+  Clock network: clk_BUFGP
+--------------------------------------------------------------------------------
+
+
+All constraints were met.
+
+
+Data Sheet report:
+-----------------
+All values displayed in nanoseconds (ns)
+
+Clock to Setup on destination clock clk
+---------------+---------+---------+---------+---------+
+               | Src:Rise| Src:Fall| Src:Rise| Src:Fall|
+Source Clock   |Dest:Rise|Dest:Rise|Dest:Fall|Dest:Fall|
+---------------+---------+---------+---------+---------+
+clk            |   15.330|         |         |         |
+---------------+---------+---------+---------+---------+
+
+
+Timing summary:
+---------------
+
+Timing errors: 0  Score: 0  (Setup/Max: 0, Hold: 0)
+
+Constraints cover 39209 paths, 0 nets, and 3275 connections
+
+Design statistics:
+   Minimum period:  15.330ns{1}   (Maximum frequency:  65.232MHz)
+
+
+------------------------------------Footnotes-----------------------------------
+1)  The minimum period statistic assumes all single cycle delays.
+
+Analysis completed Wed Dec 04 16:36:21 2024 
+--------------------------------------------------------------------------------
+
+Trace Settings:
+-------------------------
+Trace Settings 
+
+Peak Memory Usage: 4528 MB
+
+
+

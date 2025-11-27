@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/toplevel</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/toplevel/behavioral</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/picoblaze</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/picoblaze.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/picoblaze.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/picoblaze/Behavioral</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/picoblaze.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/picoblaze.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/programa_helloworld_int_FLIP</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/programa_helloworld_int_FLIP.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/programa_helloworld_int_FLIP.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/programa_helloworld_int_FLIP/v1</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/programa_helloworld_int_FLIP.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/programa_helloworld_int_FLIP.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/arithmetic_process</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/arithmetic_process/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/addsub8</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/addsub8/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/arithmatic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/carry_flag_logic</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/carry_flag_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/carry_flag_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/carry_flag_logic/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/carry_flag_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/carry_flag_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/flip</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/flip.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/flip.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/flip/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/flip.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/flip.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/interrupt_capture</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_capture.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_capture.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/interrupt_capture/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_capture.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_capture.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/interrupt_logic</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/interrupt_logic/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/interrupt_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/IO_strobe_logic</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/IO_strobe_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/IO_strobe_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/IO_strobe_logic/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/IO_strobe_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/IO_strobe_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/logical_bus_processing</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/logical_bus_processing.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/logical_bus_processing.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/logical_bus_processing/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/logical_bus_processing.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/logical_bus_processing.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/mix</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/mix.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/mix.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/mix/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/mix.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/mix.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/program_counter</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/program_counter.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/program_counter.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/program_counter/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/program_counter.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/program_counter.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/register_and_flag_enable</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_and_flag_enable.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_and_flag_enable.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/register_and_flag_enable/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_and_flag_enable.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_and_flag_enable.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/register_bank</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/register_bank/Behavioral</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/ram_Nx1</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/ram_Nx1/Behavioral</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/register_bank.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/shift_rotate</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/shift_rotate.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/shift_rotate.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/shift_rotate/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/shift_rotate.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/shift_rotate.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/stack_counter</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_counter.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_counter.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/stack_counter/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_counter.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_counter.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/stack_ram</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/stack_ram/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/ram_x1s</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/ram_x1s/Behavioral</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/stack_ram.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/T_state_and_Reset</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/T_state_and_Reset.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/T_state_and_Reset.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/T_state_and_Reset/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/T_state_and_Reset.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/T_state_and_Reset.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/zero_flag_logic</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/zero_flag_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/zero_flag_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3607" delta="new" >Unit <arg fmt="%s" index="1">work/zero_flag_logic/low_level_definition</arg> is now defined in a different file.  It was defined in &quot;<arg fmt="%s" index="2">E:/Arquitectura/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_16bits/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/zero_flag_logic.vhd</arg>&quot;, and is now defined in &quot;<arg fmt="%s" index="3">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/zero_flag_logic.vhd</arg>&quot;.
+</msg>
+
+<msg type="warning" file="Xst" num="790" delta="new" >&quot;<arg fmt="%s" index="1">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot; line <arg fmt="%d" index="2">132</arg>: Index value(s) does not match array range, simulation mismatch.
+</msg>
+
+<msg type="info" file="Xst" num="1433" delta="old" >Contents of array &lt;<arg fmt="%s" index="1">RAM</arg>&gt; may be accessed with an index that exceeds the array size. This could cause simulation mismatch.
+</msg>
+
+<msg type="warning" file="Xst" num="790" delta="new" >&quot;<arg fmt="%s" index="1">C:/Users/DETCP/Desktop/Practicas_4AHC_24_25_G2/P2c_PicoBlaze_HelloWorld_RAM_Int_FLIP/P2c_Picoblaze_HelloWorld_RAM_Int_FLIP/toplevel_helloworld_RAM_Int.vhd</arg>&quot; line <arg fmt="%d" index="2">136</arg>: Index value(s) does not match array range, simulation mismatch.
+</msg>
+
+<msg type="info" file="Xst" num="1433" delta="old" >Contents of array &lt;<arg fmt="%s" index="1">RAM</arg>&gt; may be accessed with an index that exceeds the array size. This could cause simulation mismatch.
+</msg>
+
+<msg type="warning" file="Xst" num="646" delta="old" >Signal &lt;<arg fmt="%s" index="1">sel</arg>&gt; is assigned but never used. This unconnected signal will be trimmed during the optimization process.
+</msg>
+
+<msg type="info" file="Xst" num="1767" delta="old" >HDL ADVISOR - Resource sharing has identified that some arithmetic operations in this design can share the same physical resources for reduced device utilization. For improved clock frequency you may try to disable resource sharing.
+</msg>
+
+<msg type="info" file="Xst" num="3045" delta="old" >The ROM description &lt;<arg fmt="%s" index="1">Mrom_dout_rom0000</arg>&gt; will be implemented on LUTs because the limited number of device block RAMs. If you want to be implemented as block RAM, please select a larger device.
+</msg>
+
+<msg type="info" file="Xst" num="3231" delta="old" >The small RAM &lt;<arg fmt="%s" index="1">Mram_rambit</arg>&gt; will be implemented on LUTs in order to maximize performance and save block RAM resources. If you want to force its implementation on block, use option/constraint ram_style.
+</msg>
+
+<msg type="info" file="Xst" num="3218" delta="old" >HDL ADVISOR - The RAM &lt;<arg fmt="%s" index="1">Mram_RAM</arg>&gt; will be implemented on LUTs either because you have described an asynchronous read or because of currently unsupported block RAM features. If you have described an asynchronous read, making it synchronous would allow you to take advantage of available block RAM resources, for optimized device usage and improved timings. Please refer to your documentation for coding guidelines.
+</msg>
+
+<msg type="info" file="Xst" num="2261" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">rxbuff_out_0</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">toplevel</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">14 FFs/Latches</arg>, which will be removed : <arg fmt="%s" index="4">&lt;rxbuff_out_1&gt; &lt;rxbuff_out_2&gt; &lt;rxbuff_out_3&gt; &lt;rxbuff_out_4&gt; &lt;rxbuff_out_5&gt; &lt;rxbuff_out_6&gt; &lt;rxbuff_out_7&gt; &lt;rxbuff_out_8&gt; &lt;rxbuff_out_9&gt; &lt;rxbuff_out_10&gt; &lt;rxbuff_out_11&gt; &lt;rxbuff_out_12&gt; &lt;rxbuff_out_13&gt; &lt;rxbuff_out_14&gt; </arg>
+</msg>
+
+<msg type="warning" file="Xst" num="1710" delta="old" >FF/Latch &lt;<arg fmt="%s" index="1">dout_8</arg>&gt; (without init value) has a constant value of <arg fmt="%d" index="2">0</arg> in block &lt;<arg fmt="%s" index="3">programa_helloworld_int_FLIP</arg>&gt;. This FF/Latch will be trimmed during the optimization process.
+</msg>
+
+<msg type="warning" file="Xst" num="1895" delta="old" >Due to other FF/Latch trimming, FF/Latch &lt;<arg fmt="%s" index="1">dout_9</arg>&gt; (without init value) has a constant value of <arg fmt="%d" index="2">0</arg> in block &lt;<arg fmt="%s" index="3">programa_helloworld_int_FLIP</arg>&gt;. This FF/Latch will be trimmed during the optimization process.
+</msg>
+
+<msg type="warning" file="Xst" num="1895" delta="old" >Due to other FF/Latch trimming, FF/Latch &lt;<arg fmt="%s" index="1">dout_10</arg>&gt; (without init value) has a constant value of <arg fmt="%d" index="2">0</arg> in block &lt;<arg fmt="%s" index="3">programa_helloworld_int_FLIP</arg>&gt;. This FF/Latch will be trimmed during the optimization process.
+</msg>
+
+<msg type="warning" file="Xst" num="1895" delta="old" >Due to other FF/Latch trimming, FF/Latch &lt;<arg fmt="%s" index="1">dout_11</arg>&gt; (without init value) has a constant value of <arg fmt="%d" index="2">0</arg> in block &lt;<arg fmt="%s" index="3">programa_helloworld_int_FLIP</arg>&gt;. This FF/Latch will be trimmed during the optimization process.
+</msg>
+
+<msg type="warning" file="Xst" num="1895" delta="old" >Due to other FF/Latch trimming, FF/Latch &lt;<arg fmt="%s" index="1">dout_25</arg>&gt; (without init value) has a constant value of <arg fmt="%d" index="2">0</arg> in block &lt;<arg fmt="%s" index="3">programa_helloworld_int_FLIP</arg>&gt;. This FF/Latch will be trimmed during the optimization process.
+</msg>
+
+<msg type="info" file="Xst" num="2261" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">dout_13</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">programa_helloworld_int_FLIP</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">FF/Latch</arg>, which will be removed : <arg fmt="%s" index="4">&lt;dout_14&gt; </arg>
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_0</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_1</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_2</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_3</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_4</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_5</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_6</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_7</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_8</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_9</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_10</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_11</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_12</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_13</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_14</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="warning" file="Xst" num="2677" delta="old" >Node &lt;<arg fmt="%s" index="1">processor/mix_group/Y_15</arg>&gt; of sequential type is unconnected in block &lt;<arg fmt="%s" index="2">toplevel</arg>&gt;.
+</msg>
+
+<msg type="info" file="Xst" num="2261" delta="old" >The FF/Latch &lt;<arg fmt="%s" index="1">program/dout_7</arg>&gt; in Unit &lt;<arg fmt="%s" index="2">toplevel</arg>&gt; is equivalent to the following <arg fmt="%s" index="3">FF/Latch</arg>, which will be removed : <arg fmt="%s" index="4">&lt;program/dout_6&gt; </arg>
+</msg>
+
+</messages>
+
