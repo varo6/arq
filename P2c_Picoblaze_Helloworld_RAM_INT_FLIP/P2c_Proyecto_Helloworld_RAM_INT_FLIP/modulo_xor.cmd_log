@@ -1,0 +1,2 @@
+xst -intstyle ise -ifn "D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.xst" -ofn "D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PicoBlaze_s3estarter.ucf -p xc3s500e-fg320-4 modulo_xor.ngc modulo_xor.ngd  

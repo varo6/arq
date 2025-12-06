@@ -1,0 +1,2 @@
+vhdl isim_temp "modulo_xor.vhd"
+vhdl isim_temp "xor_tb.vhd"

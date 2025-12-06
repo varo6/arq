@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -o "D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/xor_tb_isim_beh.exe" -prj "D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/xor_tb_beh.prj" "work.xor_tb" 
