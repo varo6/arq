@@ -12,7 +12,10 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic);	 --led de comprobacion y reset
+		     		      LED : out std_logic;	 --led de comprobacion y reset
+							VGA_out : out  STD_LOGIC_VECTOR(11 downto 0) -- salida del VGA (TODO: ver pines reales de la VGA)
+							
+							);
 end toplevel ;
 
 architecture behavioral of toplevel is
@@ -75,7 +78,7 @@ architecture behavioral of toplevel is
 				inhibicion_color	: out  STD_LOGIC;
 				
 				port_id: in std_logic_vector(7 downto 0);
-				readstrobe:in std_logic
+				readstrobe:in std_logic -- readstrobe o writestrobe ?? TODO
 				);
 	end component;
 -----------------------------------------------------------------
@@ -103,7 +106,23 @@ signal inport3 : std_logic_vector(7 downto 0);
 signal inport4 : std_logic_vector(7 downto 0);
 signal outresult : std_logic;
 
+-----------------------------------------------------------------
+-- Signals para VGA. TODO: El VHD ha de funcionar a 25 MHz
+-----------------------------------------------------------------
 
+signal inport: std_logic_vector(7 downto 0);
+
+signal pixel_cont_top : unsigned(9 downto 0);
+signal linea_cont_top : unsigned(9 downto 0);
+signal inhibicion_color_top : std_logic;
+signal enable_25 : std_logic;
+
+signal pos_x : unsigned(9 downto 0); -- (640)
+signal pos_y : unsigned(9 downto 0); -- (480)
+
+-----------------------------------------------------------------
+-- Declaracion inicial de la RAM
+-----------------------------------------------------------------
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
 x"0A", x"0D", x"2A", x"20", x"48", x"45", x"4C", x"4C",
@@ -147,7 +166,7 @@ begin
                       clk => clk);
 
 
--- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEALES DE ENTRADA Y SALIDA
+-- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEALES DE ENTRADA Y SALIDA. TODO
 	perixor: modulo_xor  
     port map(  
 						in_port_1 => outport,
@@ -161,7 +180,7 @@ begin
                      reset => reset,
                        clk => clk);
 							  
-	modulo2_vga : vga
+	modulo_vga : vga
 		port map (
 						reset					=>	reset,
 						sinc_h				=> sinc_h,
@@ -172,7 +191,7 @@ begin
 						enable_25Mhz		=> enable_25,
 						
 						port_id 				=> portid,
-						readstrobe			=> readstrobe
+						readstrobe			=> readstrobe -- readstrobe? o writestrobe? TODO
 					);
 	--registra el bit tx del puerto de salida, por si ste cambia
 	txbuff:process(reset, clk)
@@ -214,5 +233,64 @@ inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 out_result when (readstrobe = '1' and portid=x"FA") else
 			 x"00";
+-- Multiplexor outport
+-- Creo que no es asi. remove later
+-- la idea es que cuando outport sea "EF", el modulo VGA lea read_strobe para asignar un color a colorear
+outport <= to_vga when (readstrobe = '1' and portid=x"EF") else -- MODULO VGA. to_vga va a ser el resultado verde o rojo para enviar a la vga
+	 x"00";
+	 
+	 
+
+
+process (reset,clk) 
+	begin 
+		if (reset = '1') then
+			VGA_out <= (others => '0');
+			--x_offset <= (others => '0');
+			--y_offset <= (others => '0');
+			--is_true <= '0';
+			
+			-- esquina final de la pantalla
+			pos_x <= "1010000000"; -- 640
+			pos_y <= "0111100000"; -- 480
+			
+			-- la escritura de la VGA es secuencial va desde (0,0) hasta (640,480) uno por uno, de derecha a izquirda, de arriba a abajo.
+
+		elsif rising_edge(clk) then
+			if (enable = '1') then
+				if (inhibicion_color_top = '1') then
+					VGA_out <= (others => '0');
+					--x_offset <= (others => '0');
+					--y_offset <= (others => '0');
+				else
+
+					if (pixel_cont_top <= pos_x) then
+						if (linea_cont_top <= pos_y) then --dentro de la pantalla
+							--is_true <= '1';
+							--x_offset <= pixel_cont_top(3 downto 0) - pos_x; 
+							--y_offset <= linea_cont_top(3 downto 0) - pos_y;
+							
+							--address_temp <= y_offset * 9 + x_offset;
+							--address <= address_temp(6 downto 0);
+							
+							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS
+								VGA_out <= rom_data;
+								
+						else --columna no coincide
+							VGA_out <= (others => '0');
+							--is_true <= '0';
+						end if;
+					else --fila no coincide
+						VGA_out <= (others => '0');
+						--is_true <= '0';
+					end if;
+				end if;
+				
+			else --no esta enable
+				VGA_out <= (others => '0');
+				--is_true <= '0';
+			end if;
+		end if;
+end process;
 
 end behavioral;
