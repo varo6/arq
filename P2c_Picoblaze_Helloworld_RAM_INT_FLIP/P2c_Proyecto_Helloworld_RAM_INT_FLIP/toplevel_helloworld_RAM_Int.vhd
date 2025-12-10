@@ -13,7 +13,10 @@ entity toplevel is
 						   rx : in std_logic;
 				         tx : out std_logic;
 		     		      LED : out std_logic;	 --led de comprobacion y reset
-							VGA_out : out  STD_LOGIC_VECTOR(11 downto 0) -- salida del VGA (TODO: ver pines reales de la VGA)
+							
+							sinc_h : out STD_LOGIC; -- .ucf
+							sinc_v : out STD_LOGIC;  -- .ucf
+							VGA_out : out  STD_LOGIC_VECTOR(11 downto 0) -- salida del VGA (TODO: ver pines reales de la VGA) .ucf
 							
 							);
 end toplevel ;
@@ -75,7 +78,11 @@ architecture behavioral of toplevel is
 				sinc_v	: out  STD_LOGIC;
 				pixel_cont : out  unsigned (9 downto 0);
 				linea_cont : out unsigned (9 downto 0);
-				inhibicion_color	: out  STD_LOGIC
+				inhibicion_color	: out  STD_LOGIC;
+				VGA_out : out STD_LOGIC_VECTOR(11 downto 0);
+				
+				port_id : in STD_LOGIC_VECTOR(7 downto 0);
+				outport : in STD_LOGIC_VECTOR(7 downto 0)
 				);
 	end component;
 -----------------------------------------------------------------
@@ -180,12 +187,14 @@ begin
 	modulo_vga : vga
 		port map (
 						reset					=>	reset,
-						sinc_h				=> sinc_h,
-						sinc_v				=> sinc_v,
-						pixel_cont			=> pixel_cont_top,
-						linea_cont			=>	linea_cont_top,
-						inhibicion_color	=> inhibicion_color_top,
-						enable_25Mhz		=> enable_25
+						sinc_h				=> sinc_h, -- Add .ucf
+						sinc_v				=> sinc_v, -- Add .ucf
+						--pixel_cont			=> pixel_cont_top,
+						--linea_cont			=>	linea_cont_top,
+						inhibicion_color	=> '0',
+						enable_25Mhz		=> clk
+						
+						
 					);
 	--registra el bit tx del puerto de salida, por si ste cambia
 	txbuff:process(reset, clk)
@@ -227,44 +236,6 @@ inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 out_result when (readstrobe = '1' and portid=x"FA") else
 			 x"00";
--- Escritura en VGA
 
-process (reset,clk) 
-	begin 
-		if (reset = '1') then
-			VGA_out <= (others => '0');
-			
-			-- esquina final de la pantalla
-			pos_x <= "1010000000"; -- 640
-			pos_y <= "0111100000"; -- 480
-			
-			-- la escritura de la VGA es secuencial va desde (0,0) hasta (640,480) uno por uno, de derecha a izquirda, de arriba a abajo.
-
-		elsif rising_edge(clk) then
-		-- VERIFICAMOS AQUI LAS RESTRICCIONES para poder pintar por pantalla
-			if (enable = '1' and readstrobe = '1' and portid="EF") then
-				if (inhibicion_color_top = '1') then
-					VGA_out <= (others => '0');
-				else
-					if (pixel_cont_top <= pos_x) then
-						if (linea_cont_top <= pos_y) then --dentro de la pantalla
-							
-							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS EL COLOR QUE DESEAMOS AQUI.
-								VGA_out <= RAM(to_integer(unsigned(portid)));
-								
-						else --columna no coincide
-							VGA_out <= (others => '0');
-						end if;
-					else --fila no coincide
-						VGA_out <= (others => '0');
-						--is_true <= '0';
-					end if;
-				end if;
-				
-			else --no esta enable
-				VGA_out <= (others => '0');
-			end if;
-		end if;
-end process;
 
 end behavioral;
