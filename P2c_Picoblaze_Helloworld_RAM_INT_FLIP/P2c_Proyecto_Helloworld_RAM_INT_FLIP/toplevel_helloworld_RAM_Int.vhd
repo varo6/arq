@@ -33,7 +33,7 @@ architecture behavioral of toplevel is
     end component;
 
 -----------------------------------------------------------------
--- declaración de la ROM de programa
+-- declaracin de la ROM de programa
 -----------------------------------------------------------------
   component programa_helloworld_int_FLIP
     Port (      address : in std_logic_vector(7 downto 0);
@@ -59,6 +59,25 @@ architecture behavioral of toplevel is
 				 readstrobe: in std_logic);
 				 
     end component;
+	 
+	
+----------------------------------------------------------------
+-- declaracion del modul VGA
+----------------------------------------------------------------	
+	 component vga is
+		Port (
+				reset : in STD_LOGIC;
+				enable_25Mhz : in STD_LOGIC;
+				sinc_h	: out  STD_LOGIC;
+				sinc_v	: out  STD_LOGIC;
+				pixel_cont : out  unsigned (9 downto 0);
+				linea_cont : out unsigned (9 downto 0);
+				inhibicion_color	: out  STD_LOGIC;
+				
+				port_id: in std_logic_vector(7 downto 0);
+				readstrobe:in std_logic
+				);
+	end component;
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -128,7 +147,7 @@ begin
                       clk => clk);
 
 
--- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEÑALES DE ENTRADA Y SALIDA
+-- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEALES DE ENTRADA Y SALIDA
 	perixor: modulo_xor  
     port map(  
 						in_port_1 => outport,
@@ -141,7 +160,21 @@ begin
                read_strobe => readstrobe,
                      reset => reset,
                        clk => clk);
-	--registra el bit tx del puerto de salida, por si éste cambia
+							  
+	modulo2_vga : vga
+		port map (
+						reset					=>	reset,
+						sinc_h				=> sinc_h,
+						sinc_v				=> sinc_v,
+						pixel_cont			=> pixel_cont_top,
+						linea_cont			=>	linea_cont_top,
+						inhibicion_color	=> inhibicion_color_top,
+						enable_25Mhz		=> enable_25,
+						
+						port_id 				=> portid,
+						readstrobe			=> readstrobe
+					);
+	--registra el bit tx del puerto de salida, por si ste cambia
 	txbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -153,7 +186,7 @@ begin
 		end if;
 	end process;
 	
-	--añade 7ceros a rx para meterlos al puerto de entrada cuando se lea
+	--aade 7ceros a rx para meterlos al puerto de entrada cuando se lea
 	rxbuff:process(reset, clk)
 	begin
 		if (reset='1') then
