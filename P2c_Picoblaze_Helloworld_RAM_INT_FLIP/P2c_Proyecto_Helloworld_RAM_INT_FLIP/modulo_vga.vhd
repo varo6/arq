@@ -37,9 +37,7 @@ entity vga is
 			sinc_v	: out  STD_LOGIC;
 			pixel_cont: out unsigned(9 downto 0);
 			linea_cont: out unsigned(9 downto 0);
-			inhibicion_color	: out  STD_LOGIC;
-			port_id : in std_logic_vector(7 downto 0);
-			readstrobe : in STD_LOGIC
+			inhibicion_color	: out  STD_LOGIC
 			);
 end vga;
 
@@ -151,16 +149,4 @@ begin
 	pixel_cont<=pixel;
 	linea_cont<=linea;
 	
-	process(clk)
-	begin
-		if rising_edge(clk) then
-			if readstrobe = '1' then
-				if (out_xor_1 = "00000000" AND out_xor_2 = "00000000" AND out_xor_3 = "00000000" AND out_xor_4 = "00000000") then
-					out_result <= '1';
-				else
-					out_result <= '0';
-				end if;
-			end if;
-		end if;
-	end process;
 end Behavioral;

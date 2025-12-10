@@ -75,10 +75,7 @@ architecture behavioral of toplevel is
 				sinc_v	: out  STD_LOGIC;
 				pixel_cont : out  unsigned (9 downto 0);
 				linea_cont : out unsigned (9 downto 0);
-				inhibicion_color	: out  STD_LOGIC;
-				
-				port_id: in std_logic_vector(7 downto 0);
-				readstrobe:in std_logic -- readstrobe o writestrobe ?? TODO
+				inhibicion_color	: out  STD_LOGIC
 				);
 	end component;
 -----------------------------------------------------------------
@@ -188,10 +185,7 @@ begin
 						pixel_cont			=> pixel_cont_top,
 						linea_cont			=>	linea_cont_top,
 						inhibicion_color	=> inhibicion_color_top,
-						enable_25Mhz		=> enable_25,
-						
-						port_id 				=> portid,
-						readstrobe			=> readstrobe -- readstrobe? o writestrobe? TODO
+						enable_25Mhz		=> enable_25
 					);
 	--registra el bit tx del puerto de salida, por si ste cambia
 	txbuff:process(reset, clk)
@@ -233,22 +227,12 @@ inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 out_result when (readstrobe = '1' and portid=x"FA") else
 			 x"00";
--- Multiplexor outport
--- Creo que no es asi. remove later
--- la idea es que cuando outport sea "EF", el modulo VGA lea read_strobe para asignar un color a colorear
-outport <= to_vga when (readstrobe = '1' and portid=x"EF") else -- MODULO VGA. to_vga va a ser el resultado verde o rojo para enviar a la vga
-	 x"00";
-	 
-	 
-
+-- Escritura en VGA
 
 process (reset,clk) 
 	begin 
 		if (reset = '1') then
 			VGA_out <= (others => '0');
-			--x_offset <= (others => '0');
-			--y_offset <= (others => '0');
-			--is_true <= '0';
 			
 			-- esquina final de la pantalla
 			pos_x <= "1010000000"; -- 640
@@ -257,28 +241,19 @@ process (reset,clk)
 			-- la escritura de la VGA es secuencial va desde (0,0) hasta (640,480) uno por uno, de derecha a izquirda, de arriba a abajo.
 
 		elsif rising_edge(clk) then
-			if (enable = '1') then
+		-- VERIFICAMOS AQUI LAS RESTRICCIONES para poder pintar por pantalla
+			if (enable = '1' and readstrobe = '1' and portid="EF") then
 				if (inhibicion_color_top = '1') then
 					VGA_out <= (others => '0');
-					--x_offset <= (others => '0');
-					--y_offset <= (others => '0');
 				else
-
 					if (pixel_cont_top <= pos_x) then
 						if (linea_cont_top <= pos_y) then --dentro de la pantalla
-							--is_true <= '1';
-							--x_offset <= pixel_cont_top(3 downto 0) - pos_x; 
-							--y_offset <= linea_cont_top(3 downto 0) - pos_y;
 							
-							--address_temp <= y_offset * 9 + x_offset;
-							--address <= address_temp(6 downto 0);
-							
-							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS
-								VGA_out <= rom_data;
+							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS EL COLOR QUE DESEAMOS AQUI.
+								VGA_out <= RAM(to_integer(unsigned(portid)));
 								
 						else --columna no coincide
 							VGA_out <= (others => '0');
-							--is_true <= '0';
 						end if;
 					else --fila no coincide
 						VGA_out <= (others => '0');
@@ -288,7 +263,6 @@ process (reset,clk)
 				
 			else --no esta enable
 				VGA_out <= (others => '0');
-				--is_true <= '0';
 			end if;
 		end if;
 end process;
