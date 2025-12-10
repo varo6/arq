@@ -8,4 +8,6 @@ La idea es hacer como un filtrador de palabras, donde la maquina está escuchand
 - Memoria: RAM o lo que sea para almacenar la palabra a filtrar
 - VGA: Periferico y por ej mostramos verde o rojo según si se ha escrito la palabra
 
+## Push
 
+Cada vez que se pretenda pushear el proyecto, hay que limpiar desde ISE todos los archivos de compilación. Project > Cleanup Project Files.
