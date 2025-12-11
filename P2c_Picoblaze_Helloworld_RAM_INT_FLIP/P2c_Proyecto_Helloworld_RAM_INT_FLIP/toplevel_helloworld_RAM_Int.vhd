@@ -12,13 +12,7 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic;	 --led de comprobacion y reset
-							
-							sinc_h : out STD_LOGIC; -- .ucf
-							sinc_v : out STD_LOGIC;  -- .ucf
-							VGA_out : out  STD_LOGIC_VECTOR(11 downto 0) -- salida del VGA (TODO: ver pines reales de la VGA) .ucf
-							
-							);
+		     		      LED : out std_logic);	 --led de comprobacion y reset
 end toplevel ;
 
 architecture behavioral of toplevel is
@@ -39,9 +33,9 @@ architecture behavioral of toplevel is
     end component;
 
 -----------------------------------------------------------------
--- declaracin de la ROM de programa
+-- declaración de la ROM de programa
 -----------------------------------------------------------------
-  component programa_helloworld_int_FLIP
+  component pruebanuevo
     Port (      address : in std_logic_vector(7 downto 0);
             		   dout : out std_logic_vector(15 downto 0);
                     clk : in std_logic);
@@ -58,34 +52,13 @@ architecture behavioral of toplevel is
 				 in_port_3 : in std_logic_vector(7 downto 0);	--Entrada para CHAR 3
 				 in_port_4 : in std_logic_vector(7 downto 0);	--Entrada para CHAR 4
 				 port_id : in std_logic_vector(7 downto 0);
-				 out_result : out std_logic;
+				 out_result : out std_logic_vector(7 downto 0);
 				 reset : in std_logic;
 				 clk : in std_logic;
-				 writestrobe: in std_logic;
-				 readstrobe: in std_logic);
+				 write_strobe: in std_logic;
+				 read_strobe: in std_logic);
 				 
     end component;
-	 
-	
-----------------------------------------------------------------
--- declaracion del modul VGA
-----------------------------------------------------------------	
-	 component vga is
-		Port (
-				reset : in STD_LOGIC;
-				enable_25Mhz : in STD_LOGIC;
-				sinc_h	: out  STD_LOGIC;
-				sinc_v	: out  STD_LOGIC;
-				pixel_cont : out  unsigned (9 downto 0);
-				linea_cont : out unsigned (9 downto 0);
-				inhibicion_color	: out  STD_LOGIC;
-				VGA_out : out STD_LOGIC_VECTOR(11 downto 0);
-				
-				readstrobe : in STD_LOGIC;
-				port_id : in STD_LOGIC_VECTOR(7 downto 0);
-				outport : in STD_LOGIC_VECTOR(7 downto 0)
-				);
-	end component;
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -109,36 +82,20 @@ signal inport1 : std_logic_vector(7 downto 0);
 signal inport2 : std_logic_vector(7 downto 0);
 signal inport3 : std_logic_vector(7 downto 0);
 signal inport4 : std_logic_vector(7 downto 0);
-signal outresult : std_logic;
+signal outresult : std_logic_vector(7 downto 0);
 
------------------------------------------------------------------
--- Signals para VGA. TODO: El VHD ha de funcionar a 25 MHz
------------------------------------------------------------------
 
-signal inport: std_logic_vector(7 downto 0);
-
-signal pixel_cont_top : unsigned(9 downto 0);
-signal linea_cont_top : unsigned(9 downto 0);
-signal inhibicion_color_top : std_logic;
-signal enable_25 : std_logic;
-
-signal pos_x : unsigned(9 downto 0); -- (640)
-signal pos_y : unsigned(9 downto 0); -- (480)
-
------------------------------------------------------------------
--- Declaracion inicial de la RAM
------------------------------------------------------------------
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
-x"0A", x"0D", x"2A", x"20", x"48", x"45", x"4C", x"4C",
-x"4F", x"20", x"49", x"27", x"4D", x"20", x"41", x"4C",
-x"49", x"56", x"45", x"21", x"20", x"3A", x"2D", x"44",
-x"20", x"2A", x"0A", x"0D", x"2A", x"20", x"50", x"52",
-x"45", x"53", x"53", x"20", x"41", x"4E", x"59", x"20",
-x"4B", x"45", x"59", x"20", x"54", x"4F", x"20", x"43",
-x"4F", x"4E", x"54", x"49", x"4E", x"55", x"45", x"20",
-x"2A", x"0A", x"0D", x"00", x"00", x"00", x"00", x"00" );
-
+  x"0A", x"0D", x"41", x"52", x"51", x"20", x"48", x"41",
+  x"53", x"48", x"45", x"52", x"20", x"3A", x"2D", x"44",
+  x"0A", x"0D", x"41", x"4E", x"44", x"52", x"45", x"20",
+  x"43", x"41", x"52", x"4D", x"45", x"4E", x"20", x"56",
+  x"41", x"52", x"4F", x"0A", x"0D", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00"
+);
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
@@ -165,13 +122,12 @@ begin
                      reset => reset,
                        clk => clk);
 
-  program: programa_helloworld_int_FLIP
+  program: pruebanuevo
     port map(     address => address,
                	     dout => instruction,
                       clk => clk);
 
 
--- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEALES DE ENTRADA Y SALIDA. TODO
 	perixor: modulo_xor  
     port map(  
 						in_port_1 => outport,
@@ -184,26 +140,7 @@ begin
                read_strobe => readstrobe,
                      reset => reset,
                        clk => clk);
-							  
-	modulo_vga : vga
-		port map (
-						reset					=>	reset,
-						sinc_h				=> sinc_h, -- Add .ucf
-						sinc_v				=> sinc_v, -- Add .ucf
-						--pixel_cont			=> pixel_cont_top,
-						--linea_cont			=>	linea_cont_top,
-						inhibicion_color	=> '0',
-						enable_25Mhz		=> clk,
-						
-						readstrobe	=> readstrobe,
-						VGA_out		=> VGA_out,
-						port_id		=> portid,
-						outport		=> outport
-						
-						
-						
-					);
-	--registra el bit tx del puerto de salida, por si ste cambia
+	--registra el bit tx del puerto de salida, por si éste cambia
 	txbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -215,7 +152,7 @@ begin
 		end if;
 	end process;
 	
-	--aade 7ceros a rx para meterlos al puerto de entrada cuando se lea
+	--añade 7ceros a rx para meterlos al puerto de entrada cuando se lea
 	rxbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -241,8 +178,7 @@ begin
 -- Multiplexor inport
 inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
-			 out_result when (readstrobe = '1' and portid=x"FA") else
+			 outresult when (readstrobe = '1' and portid=x"FA") else
 			 x"00";
-
 
 end behavioral;

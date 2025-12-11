@@ -143,14 +143,39 @@
 143  37              ; RUTINA DE ATENCION A LA INTERRUPCIÓN
 144  37              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 145  37 INTERRUP     :DISABLE    INTERRUPT    
-146  38              :CALL       RECIBE       
-147  39              :FLIP       RXREG        
-148  3A              :LOAD       TXREG        RXREG        
-149  3B              :CALL       TRANSMITE    
-150  3C              :ADD        S6           30           
-151  3D              :LOAD       TXREG        S6           
-152  3E              :CALL       TRANSMITE    
-153  3F              :RETURNI    ENABLE       
-154  FF              :ADDRESS    FF           
-155  FF              :JUMP       INTERRUP     
-156 100              
+146  38              
+147  38              ; CAMBIAR POR UNA SUBRUTINA !!!!!  ES PARA COMPROBAR
+148  38              :CALL       RECIBE       
+149  39              :LOAD       TXREG        RXREG        
+150  3A              :CALL       TRANSMITE    
+151  3B              :HASHER     RXREG        
+152  3C              :OUTPUT     RXREG        FE           
+153  3D              
+154  3D              :CALL       RECIBE       
+155  3E              :LOAD       TXREG        RXREG        
+156  3F              :CALL       TRANSMITE    
+157  40              :HASHER     RXREG        
+158  41              :OUTPUT     RXREG        FD           
+159  42              
+160  42              :CALL       RECIBE       
+161  43              :LOAD       TXREG        RXREG        
+162  44              :CALL       TRANSMITE    
+163  45              :HASHER     RXREG        
+164  46              :OUTPUT     RXREG        FC           
+165  47              
+166  47              :CALL       RECIBE       
+167  48              :LOAD       TXREG        RXREG        
+168  49              :CALL       TRANSMITE    
+169  4A              :HASHER     RXREG        
+170  4B              :OUTPUT     RXREG        FB           
+171  4C              
+172  4C              :CALL       WAIT_05BIT   
+173  4D              
+174  4D              :INPUT      RXREG        FA           
+175  4E              :LOAD       TXREG        RXREG        
+176  4F              :CALL       TRANSMITE    
+177  50              
+178  50              :RETURNI    ENABLE       
+179  FF              :ADDRESS    FF           
+180  FF              :JUMP       INTERRUP     
+181 100              

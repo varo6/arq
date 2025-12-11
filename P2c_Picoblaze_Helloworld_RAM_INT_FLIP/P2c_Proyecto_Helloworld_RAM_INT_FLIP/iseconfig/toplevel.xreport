@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2025-12-04T11:19:13</DateModified>
-  <ModuleName>modulo_xor</ModuleName>
-  <SummaryTimeStamp>2025-12-04T10:52:33</SummaryTimeStamp>
-  <SavedFilePath>D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/iseconfig/toplevel.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>D:/PRAC_carmenvaroandre/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP\</ImplementationReportsDirectory>
-  <DateInitialized>2025-12-04T10:38:31</DateInitialized>
+  <DateModified>2025-12-11T11:59:01</DateModified>
+  <ModuleName>toplevel</ModuleName>
+  <SummaryTimeStamp>2025-12-11T11:57:18</SummaryTimeStamp>
+  <SavedFilePath>C:/Users/DETCP/Downloads/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/iseconfig/toplevel.xreport</SavedFilePath>
+  <ImplementationReportsDirectory>C:/Users/DETCP/Downloads/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP\</ImplementationReportsDirectory>
+  <DateInitialized>2025-12-11T11:56:44</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>
  <body>

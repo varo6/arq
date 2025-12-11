@@ -1,0 +1,2 @@
+vhdtdtfi -lib work modulo_xor.vhd -prj P2c_Proyecto_Helloworld_RAM_INT_FLIP -o modulo_xor.spl -module modulo_xor -template C:/Xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family spartan3e modulo_xor.spl C:/Users/DETCP/Downloads/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.sym 

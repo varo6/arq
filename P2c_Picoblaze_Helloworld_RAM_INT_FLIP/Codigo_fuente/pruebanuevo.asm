@@ -143,13 +143,38 @@ espera3:	SUB		cont2, 01
         	; RUTINA DE ATENCION A LA INTERRUPCIÓN
         	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 interrup:	DISABLE 	INTERRUPT
+
+  ; CAMBIAR POR UNA SUBRUTINA !!!!!  ES PARA COMPROBAR
 		CALL 		recibe
-		FLIP		rxreg
-		LOAD 		txreg,rxreg
+		LOAD		txreg, rxreg
 		CALL 		transmite
-		ADD		S6,30
-		LOAD 		txreg,S6
+		HASHER		rxreg
+		OUTPUT		rxreg, FE
+
+		CALL 		recibe
+		LOAD		txreg, rxreg
 		CALL 		transmite
+		HASHER		rxreg
+		OUTPUT		rxreg, FD		
+
+		CALL 		recibe
+		LOAD		txreg, rxreg
+		CALL 		transmite
+		HASHER		rxreg
+		OUTPUT		rxreg, FC		
+
+		CALL 		recibe
+		LOAD		txreg, rxreg
+		CALL 		transmite
+		HASHER		rxreg
+		OUTPUT		rxreg, FB		
+
+		call wait_05bit
+
+		INPUT		rxreg, FA
+		LOAD		txreg, rxreg
+		CALL 		transmite
+
 		RETURNI		ENABLE
 		ADDRESS		FF
 		JUMP		interrup
