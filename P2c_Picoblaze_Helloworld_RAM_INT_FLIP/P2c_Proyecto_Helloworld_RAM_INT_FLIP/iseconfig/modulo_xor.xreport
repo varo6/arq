@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2025-12-10T16:07:39</DateModified>
+  <DateModified>2025-12-11T14:20:36</DateModified>
   <ModuleName>modulo_xor</ModuleName>
   <SummaryTimeStamp>Unknown</SummaryTimeStamp>
-  <SavedFilePath>/home/varo/code/arq/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/iseconfig/modulo_xor.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>/home/varo/code/arq/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/</ImplementationReportsDirectory>
+  <SavedFilePath>/home/andrew/Code/arq/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/iseconfig/modulo_xor.xreport</SavedFilePath>
+  <ImplementationReportsDirectory>/home/andrew/Code/arq/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/</ImplementationReportsDirectory>
   <DateInitialized>2025-12-04T16:40:26</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>

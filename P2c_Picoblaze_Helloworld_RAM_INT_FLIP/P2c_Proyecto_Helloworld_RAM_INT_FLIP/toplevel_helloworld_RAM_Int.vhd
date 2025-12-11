@@ -12,7 +12,13 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic);	 --led de comprobacion y reset
+		     		      LED : out std_logic;	 --led de comprobacion y reset
+							
+							sinc_h : out STD_LOGIC; -- .ucf
+							sinc_v : out STD_LOGIC;  -- .ucf
+							VGA_out : out  STD_LOGIC_VECTOR(11 downto 0) -- salida del VGA (TODO: ver pines reales de la VGA) .ucf
+							
+							);
 end toplevel ;
 
 architecture behavioral of toplevel is
@@ -33,7 +39,7 @@ architecture behavioral of toplevel is
     end component;
 
 -----------------------------------------------------------------
--- declaración de la ROM de programa
+-- declaracin de la ROM de programa
 -----------------------------------------------------------------
   component programa_helloworld_int_FLIP
     Port (      address : in std_logic_vector(7 downto 0);
@@ -59,6 +65,27 @@ architecture behavioral of toplevel is
 				 readstrobe: in std_logic);
 				 
     end component;
+	 
+	
+----------------------------------------------------------------
+-- declaracion del modul VGA
+----------------------------------------------------------------	
+	 component vga is
+		Port (
+				reset : in STD_LOGIC;
+				enable_25Mhz : in STD_LOGIC;
+				sinc_h	: out  STD_LOGIC;
+				sinc_v	: out  STD_LOGIC;
+				pixel_cont : out  unsigned (9 downto 0);
+				linea_cont : out unsigned (9 downto 0);
+				inhibicion_color	: out  STD_LOGIC;
+				VGA_out : out STD_LOGIC_VECTOR(11 downto 0);
+				
+				readstrobe : in STD_LOGIC;
+				port_id : in STD_LOGIC_VECTOR(7 downto 0);
+				outport : in STD_LOGIC_VECTOR(7 downto 0)
+				);
+	end component;
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -84,7 +111,23 @@ signal inport3 : std_logic_vector(7 downto 0);
 signal inport4 : std_logic_vector(7 downto 0);
 signal outresult : std_logic;
 
+-----------------------------------------------------------------
+-- Signals para VGA. TODO: El VHD ha de funcionar a 25 MHz
+-----------------------------------------------------------------
 
+signal inport: std_logic_vector(7 downto 0);
+
+signal pixel_cont_top : unsigned(9 downto 0);
+signal linea_cont_top : unsigned(9 downto 0);
+signal inhibicion_color_top : std_logic;
+signal enable_25 : std_logic;
+
+signal pos_x : unsigned(9 downto 0); -- (640)
+signal pos_y : unsigned(9 downto 0); -- (480)
+
+-----------------------------------------------------------------
+-- Declaracion inicial de la RAM
+-----------------------------------------------------------------
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
 x"0A", x"0D", x"2A", x"20", x"48", x"45", x"4C", x"4C",
@@ -128,7 +171,7 @@ begin
                       clk => clk);
 
 
--- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEÑALES DE ENTRADA Y SALIDA
+-- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEALES DE ENTRADA Y SALIDA. TODO
 	perixor: modulo_xor  
     port map(  
 						in_port_1 => outport,
@@ -141,7 +184,26 @@ begin
                read_strobe => readstrobe,
                      reset => reset,
                        clk => clk);
-	--registra el bit tx del puerto de salida, por si éste cambia
+							  
+	modulo_vga : vga
+		port map (
+						reset					=>	reset,
+						sinc_h				=> sinc_h, -- Add .ucf
+						sinc_v				=> sinc_v, -- Add .ucf
+						--pixel_cont			=> pixel_cont_top,
+						--linea_cont			=>	linea_cont_top,
+						inhibicion_color	=> '0',
+						enable_25Mhz		=> clk,
+						
+						readstrobe	=> readstrobe,
+						VGA_out		=> VGA_out,
+						port_id		=> portid,
+						outport		=> outport
+						
+						
+						
+					);
+	--registra el bit tx del puerto de salida, por si ste cambia
 	txbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -153,7 +215,7 @@ begin
 		end if;
 	end process;
 	
-	--añade 7ceros a rx para meterlos al puerto de entrada cuando se lea
+	--aade 7ceros a rx para meterlos al puerto de entrada cuando se lea
 	rxbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -181,5 +243,6 @@ inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 out_result when (readstrobe = '1' and portid=x"FA") else
 			 x"00";
+
 
 end behavioral;
