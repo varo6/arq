@@ -67,17 +67,17 @@ begin
 	out_xor_3 <= in_port_3 XOR char_3;
 	out_xor_4 <= in_port_4 XOR char_4;
 
-	process(clk)
+	process(readstrobe,out_xor_1,out_xor_2,out_xor_3,out_xor_4)
 	begin
-		if rising_edge(clk) then
+		
 			if readstrobe = '1' then
 				if (out_xor_1 = "00000000" AND out_xor_2 = "00000000" AND out_xor_3 = "00000000" AND out_xor_4 = "00000000") then
-					out_result <= '1';
+					out_result <= "00000000"; -- correcto
 				else
-					out_result <= '0';
+					out_result <= "11111111"; -- incorrecta la contrasena
 				end if;
 			end if;
-		end if;
+		
 	end process;
 
 

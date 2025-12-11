@@ -81,6 +81,7 @@ architecture behavioral of toplevel is
 				inhibicion_color	: out  STD_LOGIC;
 				VGA_out : out STD_LOGIC_VECTOR(11 downto 0);
 				
+				readstrobe : in STD_LOGIC;
 				port_id : in STD_LOGIC_VECTOR(7 downto 0);
 				outport : in STD_LOGIC_VECTOR(7 downto 0)
 				);
@@ -192,7 +193,13 @@ begin
 						--pixel_cont			=> pixel_cont_top,
 						--linea_cont			=>	linea_cont_top,
 						inhibicion_color	=> '0',
-						enable_25Mhz		=> clk
+						enable_25Mhz		=> clk,
+						
+						readstrobe	=> readstrobe,
+						VGA_out		=> VGA_out,
+						port_id		=> portid,
+						outport		=> outport
+						
 						
 						
 					);

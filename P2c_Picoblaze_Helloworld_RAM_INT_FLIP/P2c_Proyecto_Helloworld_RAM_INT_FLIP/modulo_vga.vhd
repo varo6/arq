@@ -38,10 +38,10 @@ entity vga is
 			--pixel_cont: out unsigned(9 downto 0);
 			--linea_cont: out unsigned(9 downto 0);
 			inhibicion_color	: out  STD_LOGIC;
-			VGA_out : out STD_LOGIC_VECTOR(11 downto 0);
+			VGA_out : out STD_LOGIC_VECTOR(11 downto 0); -- va a ser lo que mostremos por pantalla en cada pixel.
 			
-			port_id : in STD_LOGIC_VECTOR(7 downto 0);
-			outport : in STD_LOGIC(7 downto 0)
+			port_id : in STD_LOGIC_VECTOR(7 downto 0); -- x"EF"
+			outport : in STD_LOGIC(7 downto 0)			-- 
 			);
 end vga;
 
@@ -174,7 +174,9 @@ process (reset,clk)
 			-- la escritura de la VGA es secuencial va desde (0,0) hasta (640,480) uno por uno, de derecha a izquirda, de arriba a abajo.
 
 		elsif rising_edge(clk) then
+		
 		-- VERIFICAMOS AQUI LAS RESTRICCIONES para poder pintar por pantalla
+		
 			if (readstrobe = '1' and portid="EF") then
 				if (inhibicion_color = '1') then
 					VGA_out <= (others => '0');
@@ -184,7 +186,7 @@ process (reset,clk)
 							
 							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS EL COLOR QUE DESEAMOS AQUI.
 							
-							if(outport = "11111111") then	-- Signal contra correcta. Sabiendo que la signal va dirigida a la VGA		
+							if(outport = "00000000") then	-- Signal contra correcta. Sabiendo que la signal va dirigida a la VGA		
 								VGA_out <= x"0F0";
 							else							-- Signal contra incorrecta
 								VGA_out <= x"F00";
