@@ -172,10 +172,12 @@
 172  4C              :CALL       WAIT_05BIT   
 173  4D              
 174  4D              :INPUT      RXREG        FA           
-175  4E              :LOAD       TXREG        RXREG        
-176  4F              :CALL       TRANSMITE    
-177  50              
-178  50              :RETURNI    ENABLE       
-179  FF              :ADDRESS    FF           
-180  FF              :JUMP       INTERRUP     
-181 100              
+175  4E              :OUTPUT     RXREG        EF           
+176  4F              :LOAD       TXREG        RXREG        
+177  50              :CALL       TRANSMITE    
+178  51              
+179  51              
+180  51              :RETURNI    ENABLE       
+181  FF              :ADDRESS    FF           
+182  FF              :JUMP       INTERRUP     
+183 100              

@@ -172,9 +172,11 @@ interrup:	DISABLE 	INTERRUPT
 		call wait_05bit
 
 		INPUT		rxreg, FA
+		OUTPUT		rxreg, EF
 		LOAD		txreg, rxreg
 		CALL 		transmite
 
+		
 		RETURNI		ENABLE
 		ADDRESS		FF
 		JUMP		interrup

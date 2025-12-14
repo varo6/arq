@@ -12,7 +12,16 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic);	 --led de comprobacion y reset
+		     		      LED : out std_logic;
+							
+
+							VGA_out_TOP : out STD_LOGIC_VECTOR(2 downto 0);
+							sinc_h : out STD_LOGIC;
+							sinc_v : out STD_LOGIC;
+							inhibicion_color_top : out STD_LOGIC
+							);	 --led de comprobacion y reset
+							
+							
 end toplevel ;
 
 architecture behavioral of toplevel is
@@ -59,6 +68,28 @@ architecture behavioral of toplevel is
 				 read_strobe: in std_logic);
 				 
     end component;
+	 
+
+----------------------------------------------------------------
+-- declaracion del modul VGA
+----------------------------------------------------------------
+	component vga_inter is
+	Port (
+			reset : in STD_LOGIC;
+			enable_25Mhz : in STD_LOGIC;
+			sinc_h	: out  STD_LOGIC;
+			sinc_v	: out  STD_LOGIC;
+			--pixel_cont: out unsigned(9 downto 0);
+			--linea_cont: out unsigned(9 downto 0);
+			inhibicion_color_inter	: out  STD_LOGIC;
+			VGA_out_inter : out STD_LOGIC_VECTOR(2 downto 0); -- va a ser lo que mostremos por pantalla en cada pixel.
+			
+			read_strobe : in STD_LOGIC;
+			port_id : in STD_LOGIC_VECTOR(7 downto 0); -- x"EF"
+			outport : in STD_LOGIC_VECTOR(7 downto 0)			-- 
+			);
+	end component;
+
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -140,6 +171,22 @@ begin
                read_strobe => readstrobe,
                      reset => reset,
                        clk => clk);
+							  
+							  
+	modulo_vga: vga_inter
+	port map(
+				reset => reset,
+				enable_25Mhz => clk,
+				sinc_h	=> sinc_h,
+				sinc_v	=> sinc_v,
+				--pixel_cont: out unsigned(9 downto 0);
+				--linea_cont: out unsigned(9 downto 0);
+				inhibicion_color_inter	=> inhibicion_color_top,
+				VGA_out_inter => VGA_out_TOP, -- va a ser lo que mostremos por pantalla en cada pixel.
+			
+				read_strobe => readstrobe,
+				port_id => portid, -- x"EF"
+				outport => outport);
 	--registra el bit tx del puerto de salida, por si éste cambia
 	txbuff:process(reset, clk)
 	begin

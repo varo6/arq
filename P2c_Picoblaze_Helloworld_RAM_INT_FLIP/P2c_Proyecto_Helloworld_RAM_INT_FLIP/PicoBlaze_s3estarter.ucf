@@ -43,7 +43,13 @@ NET "reset" LOC = "K17" | IOSTANDARD = LVTTL | PULLDOWN ;
 #
 
 
-#NET "in_port<7>" LOC = "";
+NET "VGA_out_TOP<0>" LOC = "H14"; #R
+NET "VGA_out_TOP<1>" LOC = "H15"; #G
+NET "VGA_out_TOP<2>" LOC = "G15"; #B
+NET "sinc_h" LOC = "F15"; # SINC_H
+NET "sinc_v" LOC = "F14"; # SINC_V
+
+NET "inhibicion_color_top" LOC = "N17" | IOSTANDARD = LVTTL; # SINC_V
 #NET "in_port<6>" LOC = "";
 #NET "in_port<5>" LOC = "";
 #NET "in_port<4>" LOC = "";

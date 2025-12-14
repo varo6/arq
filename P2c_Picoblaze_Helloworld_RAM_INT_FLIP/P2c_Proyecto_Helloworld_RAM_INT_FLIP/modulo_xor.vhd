@@ -77,9 +77,9 @@ begin
 	begin
 			if read_strobe = '1' then
 				if (out_xor_1 = "00000000" AND out_xor_2 = "00000000" AND out_xor_3 = "00000000" AND out_xor_4 = "00000000") then
-					out_result <= "11111111";
+					out_result <= "00000000";
 				else
-					out_result <= "00000010"; 
+					out_result <= "11111111"; 
 				end if;
 			end if;
 	end process;
