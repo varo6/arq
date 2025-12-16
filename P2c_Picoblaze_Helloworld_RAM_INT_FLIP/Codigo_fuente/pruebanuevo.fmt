@@ -157,37 +157,74 @@
 157  3A              :HASHER     RXREG        
 158  3B              :RETURN     
 159  3C              
-160  3C              
-161  3C              
-162  3C              
-163  3C              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-164  3C              ; FIN
-165  3C              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-166  3C              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-167  3C              ; RUTINA DE ATENCION A LA INTERRUPCION
-168  3C              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-169  3C INTERRUP     :DISABLE    INTERRUPT    
-170  3D              
-171  3D              ; CAMBIAR POR UNA SUBRUTINA !!!!!  ES PARA COMPROBAR
-172  3D              :CALL       HASHEA       
-173  3E              :OUTPUT     RXREG        FE           
-174  3F              
-175  3F              :CALL       HASHEA       
-176  40              :OUTPUT     RXREG        FD           
-177  41              
-178  41              :CALL       HASHEA       
-179  42              :OUTPUT     RXREG        FC           
-180  43              
-181  43              :CALL       HASHEA       
-182  44              :OUTPUT     RXREG        FB           
-183  45              
-184  45              :CALL       WAIT_05BIT   
-185  46              
-186  46              :INPUT      RXREG        FA           
-187  47              :OUTPUT     RXREG        EF           
-188  48              :LOAD       TXREG        RXREG        
-189  49              :CALL       TRANSMITE    
-190  4A              
-191  4A              :RETURNI    ENABLE       
-192  FF              :ADDRESS    FF           
-193  FF              :JUMP       INTERRUP     
+160  3C SALTOLINEA   
+161  3C              :LOAD       TXREG        0D           ; CR  (\r)
+162  3D              :CALL       TRANSMITE    
+163  3E              :LOAD       TXREG        0A           ; LF  (\n)
+164  3F              :CALL       TRANSMITE    
+165  40              :RETURN     
+166  41              
+167  41 RUTINAMAL    
+168  41              :CALL       SALTOLINEA   
+169  42              :LOAD       TXREG        6D           ; 'm'
+170  43              :CALL       TRANSMITE    
+171  44              :LOAD       TXREG        61           ; 'a'
+172  45              :CALL       TRANSMITE    
+173  46              :LOAD       TXREG        6C           ; 'l'
+174  47              :CALL       TRANSMITE    
+175  48              :JUMP       FIN          
+176  49              
+177  49              
+178  49 RUTINABIEN   
+179  49              :CALL       SALTOLINEA   
+180  4A              :LOAD       TXREG        62           ; 'b'
+181  4B              :CALL       TRANSMITE    
+182  4C              :LOAD       TXREG        69           ; 'i'
+183  4D              :CALL       TRANSMITE    
+184  4E              :LOAD       TXREG        65           ; 'e'
+185  4F              :CALL       TRANSMITE    
+186  50              :LOAD       TXREG        6E           ; 'n'
+187  51              :CALL       TRANSMITE    
+188  52              :JUMP       FIN          
+189  53              
+190  53 FIN          
+191  53              :LOAD       TXREG        RXREG        
+192  54              :CALL       TRANSMITE    
+193  55              :RETURN     
+194  56              
+195  56              
+196  56              
+197  56              
+198  56              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+199  56              ; FIN
+200  56              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+201  56              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+202  56              ; RUTINA DE ATENCION A LA INTERRUPCION
+203  56              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+204  56 INTERRUP     :DISABLE    INTERRUPT    
+205  57              
+206  57              :CALL       HASHEA       
+207  58              :OUTPUT     RXREG        FE           
+208  59              
+209  59              :CALL       HASHEA       
+210  5A              :OUTPUT     RXREG        FD           
+211  5B              
+212  5B              :CALL       HASHEA       
+213  5C              :OUTPUT     RXREG        FC           
+214  5D              
+215  5D              :CALL       HASHEA       
+216  5E              :OUTPUT     RXREG        FB           
+217  5F              
+218  5F              :CALL       WAIT_05BIT   
+219  60              
+220  60              :INPUT      RXREG        FA           
+221  61              :OUTPUT     RXREG        EF           ; Meto del FA al EF: El vga
+222  62              
+223  62              :ADD        RXREG        00           ; Si 0 rutinamal sino rutinabien
+224  63              :CALL       Z            RUTINAMAL    
+225  64              :CALL       RUTINABIEN   
+226  65              
+227  65              
+228  65              :RETURNI    ENABLE       
+229  FF              :ADDRESS    FF           
+230  FF              :JUMP       INTERRUP     

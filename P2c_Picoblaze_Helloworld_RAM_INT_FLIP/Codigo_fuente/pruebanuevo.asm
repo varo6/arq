@@ -156,7 +156,42 @@ hashea:
   CALL        transmite
   HASHER      rxreg
   RETURN
-  
+
+saltolinea:
+  LOAD    txreg,0D       ; CR  (\r)
+  CALL    transmite
+  LOAD    txreg,0A       ; LF  (\n)
+  CALL    transmite
+  RETURN
+
+rutinamal:
+  CALL    saltolinea
+  LOAD    txreg,6D       ; 'm'
+  CALL    transmite
+  LOAD    txreg,61       ; 'a'
+  CALL    transmite
+  LOAD    txreg,6C       ; 'l'
+  CALL    transmite
+  JUMP fin
+
+
+rutinabien:
+  CALL    saltolinea
+  LOAD    txreg,62       ; 'b'
+  CALL    transmite
+  LOAD    txreg,69       ; 'i'
+  CALL    transmite
+  LOAD    txreg,65       ; 'e'
+  CALL    transmite
+  LOAD    txreg,6E       ; 'n'
+  CALL    transmite
+  JUMP    fin 
+
+fin:
+        LOAD    txreg, rxreg
+        CALL    transmite
+        RETURN
+
 
 
 
@@ -168,7 +203,6 @@ hashea:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 interrup:   DISABLE     INTERRUPT
 
-; CAMBIAR POR UNA SUBRUTINA !!!!!  ES PARA COMPROBAR
 CALL        hashea 
 OUTPUT      rxreg, FE
 
@@ -184,9 +218,12 @@ OUTPUT      rxreg, FB
 call        wait_05bit
 
 INPUT       rxreg, FA
-OUTPUT      rxreg, EF
-LOAD        txreg, rxreg
-CALL        transmite
+OUTPUT      rxreg, EF           ; Meto del FA al EF: El vga
+                      
+ADD         rxreg, 00           ; Si 0 rutinamal sino rutinabien
+CALL        Z, rutinamal
+CALL        rutinabien
+
 
 RETURNI     ENABLE
 ADDRESS     FF
