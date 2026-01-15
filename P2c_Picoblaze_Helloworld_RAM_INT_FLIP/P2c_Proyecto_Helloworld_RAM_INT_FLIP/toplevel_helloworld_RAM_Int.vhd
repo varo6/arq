@@ -12,7 +12,7 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic_vector(7 downto 0);
+		     		      LED : out std_logic;
 							
 
 							VGA_out_TOP : out STD_LOGIC_VECTOR(2 downto 0);
@@ -89,21 +89,18 @@ architecture behavioral of toplevel is
 			outport : in STD_LOGIC_VECTOR(7 downto 0)			-- 
 			);
 	end component;
-
-----------------------------------------------------------------
--- declaracion del modulo estados
-----------------------------------------------------------------
-	component estados
-   Port ( 
-        clk             : in  STD_LOGIC;
-        reset           : in  STD_LOGIC;
-        pb_write_strobe : in  STD_LOGIC;
-        pb_port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
-        pb_out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
-        system_locked   : out STD_LOGIC  -- ¡FALTABA ESTA LINEA!
-			);
-	end component;
 	
+----------------------------------------------------------------
+-- declaracion del componente de RELOJ
+----------------------------------------------------------------
+
+	component dcm_reloj is
+		Port (clk: in STD_LOGIC;
+			reset: in STD_LOGIC;
+			rel_1: out STD_LOGIC;
+			rel_5: out STD_LOGIC);
+	end component;
+
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -119,19 +116,18 @@ signal portid: std_logic_vector(7 downto 0);
 signal inport: std_logic_vector(7 downto 0);
 signal outport: std_logic_vector(7 downto 0);
 signal picoint: std_logic;
+signal enable_25 : std_logic;
+signal enable	: std_logic;
 -----------------------------------------------------------------
 -- Signals para salida XOR 
 -----------------------------------------------------------------
 
-signal inport1 : std_logic_vector(7 downto 0);
-signal inport2 : std_logic_vector(7 downto 0);
-signal inport3 : std_logic_vector(7 downto 0);
-signal inport4 : std_logic_vector(7 downto 0);
+--signal inport1 : std_logic_vector(7 downto 0);
+--signal inport2 : std_logic_vector(7 downto 0);
+--signal inport3 : std_logic_vector(7 downto 0);
+--signal inport4 : std_logic_vector(7 downto 0);
 signal outresult : std_logic_vector(7 downto 0);
------------------------------------------------------------------
--- Signals para salida ESTADOS 
------------------------------------------------------------------
-signal s_locked : std_logic;
+
 
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
@@ -147,10 +143,9 @@ signal RAM : ram_type := (
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
-    -- Conectamos la señal de bloqueo al LED 7 (F9)
-    LED(7) <= s_locked;  
-    -- Apagamos del 0 al 6 para que no molesten ni den error
-    LED(6 downto 0) <= (others => '0');
+
+	LED <= reset; 	-- para comprobar la programacion encendemos
+						--	un led cada vez que reseteamos
 
 	read_strobe <= readstrobe;
 	write_strobe <= writestrobe;
@@ -158,7 +153,7 @@ begin
 	in_port <= inport;
 	out_port <= outport;
 	picoint <= NOT rx;
-	
+ 	
   processor: picoblaze
     port map(      address => address,
                instruction => instruction,
@@ -169,12 +164,12 @@ begin
                    in_port => inport,
                  interrupt => picoint,
                      reset => reset,
-                       clk => clk);
+                       clk => enable);
 
   program: pruebanuevo
     port map(     address => address,
                	     dout => instruction,
-                      clk => clk);
+                      clk => enable);
 
 
 	perixor: modulo_xor  
@@ -188,13 +183,13 @@ begin
               write_strobe => writestrobe,
                read_strobe => readstrobe,
                      reset => reset,
-                       clk => clk);
+                       clk => enable);
 							  
 							  
 	modulo_vga: vga_inter
 	port map(
 				reset => reset,
-				enable_25Mhz => clk,
+				enable_25Mhz => enable_25,
 				sinc_h	=> sinc_h,
 				sinc_v	=> sinc_v,
 				--pixel_cont: out unsigned(9 downto 0);
@@ -204,23 +199,29 @@ begin
 			
 				read_strobe => readstrobe,
 				port_id => portid, -- x"EF"
-				outport => outport );
+				outport => outport);
 				
-	mod_estados: estados
-    port map (
-				clk             => clk,
-				reset           => reset,
-				pb_write_strobe => writestrobe, 
-				pb_port_id      => portid,
-				pb_out_port     => outport,
-				system_locked   => s_locked  );
-   		
+	modulo_reloj : dcm_reloj
+		Port Map (
+						reset					=>	reset,
+						clk					=> clk,
+						rel_1					=> enable,
+						rel_5					=> enable_25
+		);
+		
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+
 	--registra el bit tx del puerto de salida, por si éste cambia
-	txbuff:process(reset, clk)
+	txbuff:process(reset, enable)
 	begin
 		if (reset='1') then
 			tx <= '1';
-		elsif rising_edge(clk) then
+		elsif rising_edge(enable) then
 			if (writestrobe = '1' and portid=x"FF") then
 				tx <= outport(0);	
 			end if;
@@ -228,11 +229,11 @@ begin
 	end process;
 	
 	--añade 7ceros a rx para meterlos al puerto de entrada cuando se lea
-	rxbuff:process(reset, clk)
+	rxbuff:process(reset, enable)
 	begin
 		if (reset='1') then
 			rxbuff_out <= (others=>'1');
-		elsif rising_edge(clk) then
+		elsif rising_edge(enable) then
 			if (readstrobe = '1' and portid =x"FF") then
 				rxbuff_out <= rx & "0000000";	
 			end if;		 
@@ -240,9 +241,9 @@ begin
 	end process;
 	
 	-- Memoria RAM (escritura sincrona / lectura asincrona)
-	process (clk)
+	process (enable)
 	begin
-		if (clk'event and clk = '1') then
+		if (enable'event and enable = '1') then
 			if (writestrobe = '1' and portid<x"40") then
 				RAM(to_integer(unsigned(portid))) <= outport;
 			end if;
@@ -254,7 +255,6 @@ begin
 inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 outresult when (readstrobe = '1' and portid=x"FA") else
-			 ("0000000" & s_locked) when (readstrobe = '1' and portid = x"DD") else
 			 x"00";
 
 end behavioral;

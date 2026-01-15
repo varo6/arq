@@ -72,16 +72,21 @@ begin
 	out_xor_2 <= saved_char_2 XOR char_2;
 	out_xor_3 <= saved_char_3 XOR char_3;
 	out_xor_4 <= saved_char_4 XOR char_4;
-
-	process(read_strobe, out_xor_1, out_xor_2, out_xor_3, out_xor_4)
+	
+	process(clk, reset)
 	begin
-			if read_strobe = '1' then
-				if (out_xor_1 = "00000000" AND out_xor_2 = "00000000" AND out_xor_3 = "00000000" AND out_xor_4 = "00000000") then
-					out_result <= "00000000";
-				else
-					out_result <= "11111111"; 
-				end if;
-			end if;
+		 if reset = '1' then
+			  out_result <= (others => '0');
+		 elsif rising_edge(clk) then
+			  if read_strobe = '1' then
+					if (out_xor_1 = "00000000" AND
+						 out_xor_2 = "00000000" AND
+						 out_xor_3 = "00000000" AND
+						 out_xor_4 = "00000000") then
+						 out_result <= "00000000";
+					end if;
+			  end if;
+		 end if;
 	end process;
 
 

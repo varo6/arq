@@ -120,15 +120,15 @@ process (reset,enable_25Mhz)
 								VGA_out_inter_int <= "100";
 							end if;
 						else								--columna no coincide
-							VGA_out_inter_int <= (others => '0');
+							VGA_out_inter_int <= "001";
 						end if;
 					else									--fila no coincide
-						VGA_out_inter_int <= (others => '0');
+						VGA_out_inter_int <= "001";
 					end if;
 				end if;
 				
 			else											--no esta activado
-				VGA_out_inter_int <= (others => '0');
+				VGA_out_inter_int <= "001";
 			end if;
 		end if;
 end process;

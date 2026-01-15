@@ -94,19 +94,16 @@ begin
 	sinc_h <= sinc_h_i;
 	
 	control_sincronia_vert:process(enable_25Mhz)
-		begin
-			if(enable_25Mhz'event and enable_25Mhz='1') then
-				
-					if(pixel = SINC_H_0_1) then
-						if(linea >= SINC_V_1 and linea < SINC_V_2) then
-							sinc_v_i <= '0';
-						else
-							sinc_v_i <= '1';
-						end if;
-					
-				end if;
-			end if;
-		end process;
+    begin
+        if(enable_25Mhz'event and enable_25Mhz='1') then
+            -- Actualizar la señal vertical continuamente basándose en el contador de líneas
+            if(linea >= SINC_V_1 and linea < SINC_V_2) then
+                sinc_v_i <= '0';
+            else
+                sinc_v_i <= '1';
+            end if;
+        end if;
+    end process;
 	sinc_v <= sinc_v_i;
 
 	control_inh_h:process(pixel)
