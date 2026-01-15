@@ -12,7 +12,7 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic;
+		     		      LED : out std_logic_vector(7 downto 0);
 							
 
 							VGA_out_TOP : out STD_LOGIC_VECTOR(2 downto 0);
@@ -90,6 +90,20 @@ architecture behavioral of toplevel is
 			);
 	end component;
 
+----------------------------------------------------------------
+-- declaracion del modulo estados
+----------------------------------------------------------------
+	component estados
+   Port ( 
+        clk             : in  STD_LOGIC;
+        reset           : in  STD_LOGIC;
+        pb_write_strobe : in  STD_LOGIC;
+        pb_port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
+        pb_out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
+        system_locked   : out STD_LOGIC  -- ¡FALTABA ESTA LINEA!
+			);
+	end component;
+	
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -114,7 +128,10 @@ signal inport2 : std_logic_vector(7 downto 0);
 signal inport3 : std_logic_vector(7 downto 0);
 signal inport4 : std_logic_vector(7 downto 0);
 signal outresult : std_logic_vector(7 downto 0);
-
+-----------------------------------------------------------------
+-- Signals para salida ESTADOS 
+-----------------------------------------------------------------
+signal s_locked : std_logic;
 
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
@@ -130,9 +147,10 @@ signal RAM : ram_type := (
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
-
-	LED <= reset; 	-- para comprobar la programacion encendemos
-						--	un led cada vez que reseteamos
+    -- Conectamos la señal de bloqueo al LED 7 (F9)
+    LED(7) <= s_locked;  
+    -- Apagamos del 0 al 6 para que no molesten ni den error
+    LED(6 downto 0) <= (others => '0');
 
 	read_strobe <= readstrobe;
 	write_strobe <= writestrobe;
@@ -140,7 +158,7 @@ begin
 	in_port <= inport;
 	out_port <= outport;
 	picoint <= NOT rx;
- 	
+	
   processor: picoblaze
     port map(      address => address,
                instruction => instruction,
@@ -186,7 +204,17 @@ begin
 			
 				read_strobe => readstrobe,
 				port_id => portid, -- x"EF"
-				outport => outport);
+				outport => outport );
+				
+	mod_estados: estados
+    port map (
+				clk             => clk,
+				reset           => reset,
+				pb_write_strobe => writestrobe, 
+				pb_port_id      => portid,
+				pb_out_port     => outport,
+				system_locked   => s_locked  );
+   		
 	--registra el bit tx del puerto de salida, por si éste cambia
 	txbuff:process(reset, clk)
 	begin
@@ -226,6 +254,7 @@ begin
 inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 outresult when (readstrobe = '1' and portid=x"FA") else
+			 ("0000000" & s_locked) when (readstrobe = '1' and portid = x"DD") else
 			 x"00";
 
 end behavioral;
