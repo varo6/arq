@@ -62,11 +62,11 @@ begin
 	end process;
 
 
-	-- "HOLA"
-	saved_char_1 <= "00010110";
-	saved_char_2 <= "11110110";
-	saved_char_3 <= "00110110";
-	saved_char_4 <= "10000110";
+	-- "HOLA" Hasheado
+	saved_char_1 <= "00101011";
+	saved_char_2 <= "01011010";
+	saved_char_3 <= "01011011";
+	saved_char_4 <= "10110010";
 
 	out_xor_1 <= saved_char_1 XOR char_1;
 	out_xor_2 <= saved_char_2 XOR char_2;
