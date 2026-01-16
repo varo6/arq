@@ -1,21 +1,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; PROGRAMA DE SEGURIDAD CON FSM Y LED DE BLOQUEO
-; Mantiene estructura original + Comunicación Hardware
+; PROGRAMA MATRICULA: FIRMA + AUTOCLEAN + ASTERISCOS + MELODIA
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;declaracion de constantes y variables
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                  
-CONSTANT    rs232, FF       ; Puerto serie
-CONSTANT    fsm_port, DD    ; NUEVO: Puerto para hablar con la FSM (Hardware)
-CONSTANT    vga_port, EF    ; Puerto para VGA (opcional)
+CONSTANT    rs232, FF       
+CONSTANT    fsm_port, DD    
+CONSTANT    vga_port, EF    
 
-; Puertos de caracteres para el XOR
 CONSTANT    char1, FE
 CONSTANT    char2, FD
 CONSTANT    char3, FC
 CONSTANT    char4, FB
-CONSTANT    xor_res, FA     ; Resultado del XOR
+CONSTANT    xor_res, FA     
 
 NAMEREG     s1, txreg       
 NAMEREG     s2, rxreg       
@@ -26,50 +21,72 @@ NAMEREG     s5, cont2
 ADDRESS     00              
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Inicio del programa
+; INICIO ABSOLUTO (Solo al encender)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DISABLE INTERRUPT
 
-start:      
-    ; --- NUEVO: CHEQUEO DE BLOQUEO (LED) ---
-    ; Antes de imprimir nada, miramos si el hardware nos tiene castigados
+inicio_total:      
+    ; 1. Chequeo inicial de seguridad
     INPUT   s0, fsm_port
-    AND     s0, 01          ; Miramos el bit 0 (s_locked)
-    JUMP    NZ, start       ; Si es 1 (LED encendido), volvemos a empezar (espera)
+    AND     s0, 01          
+    JUMP    NZ, inicio_total ; Si arranca bloqueado, espera.
 
-    ; --- SI LLEGAMOS AQUI, EL SISTEMA ESTA LIBRE ---
-
-    ; Instrucciones para la parte1 (Imprimir RAM / Vuestra firma)
-    LOAD    S7,00
-parte1:     
+    ; 2. IMPRIMIR FIRMA (ARQ VARO...)
+    ; Esto solo se ejecuta UNA VEZ al encender la placa
+    LOAD    S7,00           
+print_ram_loop:     
     INPUT   txreg,S7
-    ADD     txreg,00
-    JUMP    Z, parte2       ; Si es 00 (fin de cadena), vamos a esperar input
+    ADD     txreg,00        
+    JUMP    Z, ciclo_usuario ; Fin de firma -> Vamos al bucle principal
     CALL    transmite
     ADD     S7,01
-    JUMP    parte1
+    JUMP    print_ram_loop
 
-; Instrucciones para la parte2 (Bucle de espera de usuario)
-parte2:     
-    ENABLE INTERRUPT        ; Activamos interrupcion para poder escribir
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CICLO DE USUARIO (Se repite tras bloqueo)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ciclo_usuario:     
+    ; 1. BORRAR PANTALLA (Magia automatica)
+    CALL    cls
+    
+    ; 2. Imprimir "INTRO PASS: "
+    CALL    msg_intro       
+    
+    ; 3. Activar interrupciones y esperar
+    ENABLE INTERRUPT        
+    
 bucle_espera:     
-    ; Comprobamos constantemente si el hardware nos bloquea de repente
+    ; Vigilamos si el hardware nos bloquea (Fallo x3)
     INPUT   s0, fsm_port
     AND     s0, 01
-    JUMP    NZ, start       ; Si nos bloquean, saltamos al inicio (desactiva int)
+    JUMP    NZ, rutina_bloqueo ; Si hay bloqueo, saltamos a la sala de espera
     
-    JUMP    bucle_espera    ; Si no, seguimos esperando
+    JUMP    bucle_espera    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; RUTINA DE BLOQUEO (Sala de Castigo)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rutina_bloqueo:
+    ; Aquí entramos cuando s_locked = 1
+    ; Nos quedamos aqui dando vueltas los 5 segundos
+    INPUT   s0, fsm_port
+    AND     s0, 01
+    JUMP    NZ, rutina_bloqueo  ; ¿Sigue bloqueado? Repetir.
+    
+    ; ¡SE ACABO EL CASTIGO!
+    ; El hardware ha puesto s_locked a 0.
+    ; Saltamos a 'ciclo_usuario' para borrar pantalla y pedir pass.
+    JUMP    ciclo_usuario
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Rutina de recepcion de caracteres
+; RUTINAS RS232 (Drivers)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 recibe:     
     INPUT   rxreg, rs232
     AND     rxreg, 80
     JUMP    NZ, recibe
     CALL    wait_05bit
-    
     LOAD    contbit,09
 next_rx_bit: 
     CALL    wait_1bit
@@ -81,14 +98,10 @@ next_rx_bit:
     JUMP    NZ, next_rx_bit
     RETURN
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Rutina de transmision de caracteres
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 transmite:  
     LOAD    s0, 00
     OUTPUT  s0, rs232
     CALL    wait_1bit
-
     LOAD    contbit, 08
 next_tx_bit: 
     OUTPUT  txreg, rs232
@@ -96,15 +109,11 @@ next_tx_bit:
     SR0     txreg
     SUB     contbit, 01
     JUMP    NZ, next_tx_bit
-    
     LOAD    s0, FF
     OUTPUT  s0, rs232
     CALL    wait_1bit
     RETURN
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Rutinas de Tiempos (Drivers)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 wait_1bit:  LOAD    cont1, 03  
 espera2:    LOAD    cont2, 22
 espera1:    SUB     cont2, 01
@@ -123,92 +132,167 @@ espera3:    SUB     cont2, 01
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; RUTINA HASHEA (Recibe, Eco, Hash)
+; MENSAJES Y UTILIDADES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 hashea: 
-    CALL    recibe
-    LOAD    txreg, rxreg
-    CALL    transmite
-    HASHER  rxreg
+    CALL    recibe          ; Recibe la letra REAL (ej: 'A') en rxreg
+    
+    ; --- CAMBIO PRO: ENMASCARAMIENTO ---
+    LOAD    txreg, 2A       ; Cargamos el codigo ASCII del ASTERISCO '*'
+    CALL    transmite       ; Enviamos '*' a la pantalla (ocultando la letra)
+    ; -----------------------------------
+    
+    HASHER  rxreg           ; Hasheamos la letra REAL (rxreg), no el asterisco
     RETURN
 
 saltolinea:
-    LOAD    txreg,0D        ; CR
+    LOAD    txreg,0D
     CALL    transmite
-    LOAD    txreg,0A        ; LF
+    LOAD    txreg,0A
     CALL    transmite
     RETURN
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; MENSAJES (Mal / Bien)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-rutinamal:
-    CALL    saltolinea
-    LOAD    txreg,6D        ; 'm'
+; --- RUTINA LIMPIAR PANTALLA (ANSI CLEAR) ---
+cls:
+    LOAD    txreg, 1B       ; ESC
     CALL    transmite
-    LOAD    txreg,61        ; 'a'
+    LOAD    txreg, 5B       ; [
     CALL    transmite
-    LOAD    txreg,6C        ; 'l'
+    LOAD    txreg, 32       ; 2
     CALL    transmite
-    JUMP    fin
-
-rutinabien:
-    CALL    saltolinea
-    LOAD    txreg,62        ; 'b'
+    LOAD    txreg, 4A       ; J
     CALL    transmite
-    LOAD    txreg,69        ; 'i'
+    ; Mover cursor al inicio
+    LOAD    txreg, 1B       ; ESC
     CALL    transmite
-    LOAD    txreg,65        ; 'e'
+    LOAD    txreg, 5B       ; [
     CALL    transmite
-    LOAD    txreg,6E        ; 'n'
+    LOAD    txreg, 48       ; H
     CALL    transmite
-    JUMP    fin 
-
-fin:
-    ; (Opcional) Imprimir el código de error si quieres debug
-    ; LOAD    txreg, rxreg
-    ; CALL    transmite
     RETURN
 
+msg_intro:
+    CALL    saltolinea
+    LOAD    txreg, 49   ; I
+    CALL    transmite
+    LOAD    txreg, 4E   ; N
+    CALL    transmite
+    LOAD    txreg, 54   ; T
+    CALL    transmite
+    LOAD    txreg, 52   ; R
+    CALL    transmite
+    LOAD    txreg, 4F   ; O
+    CALL    transmite
+    LOAD    txreg, 20   ; space
+    CALL    transmite
+    LOAD    txreg, 50   ; P
+    CALL    transmite
+    LOAD    txreg, 41   ; A
+    CALL    transmite
+    LOAD    txreg, 53   ; S
+    CALL    transmite
+    LOAD    txreg, 53   ; S
+    CALL    transmite
+    LOAD    txreg, 3A   ; :
+    CALL    transmite
+    LOAD    txreg, 20   ; space
+    CALL    transmite
+    RETURN
+
+msg_error:
+    CALL    saltolinea
+    
+    ; 1. BEEP DE ERROR (1 pitido)
+    LOAD    txreg, 07       ; Bell ASCII
+    CALL    transmite
+    
+    ; 2. Texto ERROR
+    LOAD    txreg, 20   ; space
+    CALL    transmite
+    LOAD    txreg, 45   ; E
+    CALL    transmite
+    LOAD    txreg, 52   ; R
+    CALL    transmite
+    LOAD    txreg, 52   ; R
+    CALL    transmite
+    LOAD    txreg, 4F   ; O
+    CALL    transmite
+    LOAD    txreg, 52   ; R
+    CALL    transmite
+    CALL    saltolinea
+    RETURN
+
+msg_felicidades:
+    CALL    saltolinea
+
+    ; --- CAMBIO PRO: MELODIA VICTORIA (3 Beeps) ---
+    LOAD    txreg, 07       ; Beep 1
+    CALL    transmite
+    LOAD    txreg, 07       ; Beep 2
+    CALL    transmite
+    LOAD    txreg, 07       ; Beep 3
+    CALL    transmite
+    ; ----------------------------------------------
+
+    LOAD    txreg, 20   ; space
+    CALL    transmite
+    LOAD    txreg, 46   ; F
+    CALL    transmite
+    LOAD    txreg, 45   ; E
+    CALL    transmite
+    LOAD    txreg, 4C   ; L
+    CALL    transmite
+    LOAD    txreg, 49   ; I
+    CALL    transmite
+    LOAD    txreg, 43   ; C
+    CALL    transmite
+    LOAD    txreg, 49   ; I
+    CALL    transmite
+    LOAD    txreg, 44   ; D
+    CALL    transmite
+    LOAD    txreg, 41   ; A
+    CALL    transmite
+    LOAD    txreg, 44   ; D
+    CALL    transmite
+    LOAD    txreg, 45   ; E
+    CALL    transmite
+    LOAD    txreg, 53   ; S
+    CALL    transmite
+    LOAD    txreg, 21   ; !
+    CALL    transmite
+    LOAD    txreg, 21   ; !
+    CALL    transmite
+    CALL    saltolinea
+    RETURN
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; RUTINA DE ATENCION A LA INTERRUPCION
+; INTERRUPCION
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 interrup:   
     DISABLE INTERRUPT
 
-    ; Recibimos y hasheamos los 4 caracteres
-    CALL        hashea 
-    OUTPUT      rxreg, FE
+    ; Ahora hashea imprime asteriscos automaticamente
+    CALL    hashea 
+    OUTPUT  rxreg, FE
+    CALL    hashea 
+    OUTPUT  rxreg, FD
+    CALL    hashea 
+    OUTPUT  rxreg, FC
+    CALL    hashea
+    OUTPUT  rxreg, FB
 
-    CALL        hashea 
-    OUTPUT      rxreg, FD
+    call    wait_05bit
 
-    CALL        hashea 
-    OUTPUT      rxreg, FC
-
-    CALL        hashea
-    OUTPUT      rxreg, FB
-
-    call        wait_05bit
-
-    ; --- LEER RESULTADO DEL XOR ---
-    INPUT       rxreg, FA     ; Leemos resultado (00 o FF)
+    INPUT   rxreg, FA       ; Leer resultado XOR
+    OUTPUT  rxreg, fsm_port ; Informar FSM
+    OUTPUT  rxreg, EF       ; Informar VGA (Verde/Rojo)
     
-    ; --- NUEVO: AVISAR AL HARDWARE ---
-    ; Esto es vital: le decimos a la FSM si hemos acertado o fallado
-    OUTPUT      rxreg, fsm_port 
-    
-    ; Tambien lo mandamos al VGA (codigo original)
-    OUTPUT      rxreg, EF           
-                      
-    ; Comprobamos resultado para el usuario
-    OR    		 rxreg, 00           
-    CALL        Z, rutinabien       ; Si es 0 -> Bien
-    CALL        NZ, rutinamal       ; Si no es 0 -> Mal (use CALL NZ para seguridad)
+    OR      rxreg, 00            
+    CALL    Z, msg_felicidades   
+    CALL    NZ, msg_error        
 
-    ; Volvemos al start para comprobar si el hardware nos ha bloqueado
-    RETURNI     ENABLE
+    RETURNI ENABLE
     
-    ADDRESS     FF
-    JUMP        interrup
+    ADDRESS FF
+    JUMP    interrup

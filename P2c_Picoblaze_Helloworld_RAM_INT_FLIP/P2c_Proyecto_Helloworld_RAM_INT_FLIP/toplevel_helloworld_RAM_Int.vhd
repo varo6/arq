@@ -157,7 +157,11 @@ begin
 	port_id <= portid;
 	in_port <= inport;
 	out_port <= outport;
-	picoint <= NOT rx;
+	
+	-- La interrupción solo se activa si llega un dato (NOT rx)
+	-- Y ADEMÁS no estamos bloqueados (s_locked = '0').
+	-- Si s_locked es '1', picoint se fuerza a '0' (sordo).
+	picoint <= (NOT rx) when s_locked = '0' else '0';
 	
   processor: picoblaze
     port map(      address => address,
