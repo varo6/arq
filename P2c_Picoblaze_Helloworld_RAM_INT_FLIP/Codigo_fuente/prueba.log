@@ -1,0 +1,12 @@
+Crypto asm logfile
+
+Reading input file...
+
+Too many operands in line 49
+
+Too many operands in line 156
+Testing instructions...
+Unknown instruction - QUE found on line 32
+Unknown instruction - A found on line 49
+Unknown instruction - RO found on line 156
+Program aborted...error count 5

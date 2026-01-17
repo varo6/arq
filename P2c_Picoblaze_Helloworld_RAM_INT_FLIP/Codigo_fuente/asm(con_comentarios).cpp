@@ -66,8 +66,8 @@ bit2 bit1 bit0
 #define SHIFT_RIGHT 8
 #define SHIFT_LEFT 0
 
-/* flip */ /* added new instruction */
-char *flip_id = "11111";                                           //Codigo de operacion, 5 bits más significativos de los 16 que forman las instrucción
+/* hasher */ /* added new instruction */
+char *hasher_id = "11111";                                           
 /* LIBRES 10101, 10110,11100,11101*/
 
 /* input/output group */
@@ -163,7 +163,7 @@ char *instruction_set[] = {
 	"CONSTANT",	/* 26 */
 	"NAMEREG",	/* 27 */
 	"ADDRESS",	/* 28 */
-	"FLIP"};	/* 29 */ /* added new instruction */
+	"HASHER"};	/* 29 */ /* added new instruction */
 
 int error = 0;
 /*====================================== */
@@ -430,7 +430,7 @@ void test_instructions(void)
 				case 18: /* SLX */
 				case 19: /* SLA */
 				case 20: /* RL */
-				case 29: /* FLIP */ /* added new instruction, same syntax with shift/rotate */
+				case 29: /* hasher */ /* added new instruction, same syntax with shift/rotate */
 					if(op[i].op2 != NULL){
 						printf("ERROR - Too many Operands for %s on line %d\n", op[i].instruction, i+1);
 						fprintf(ofp,"ERROR - Too many Operands for %s on line %d\n", op[i].instruction, i+1);
@@ -563,14 +563,14 @@ void test_instructions(void)
 						}
 					}
 					break;
-				case 29: /* NUEVA OPERACION */
-				/* VERIFICACION DE 2 OPERANDOS NO NULOS */ /* REGISTROS - CONSTANTES (PARA SACAR BUENA NOTA)... */
+			/*	case 29:  NUEVA OPERACION 
+				/* VERIFICACION DE 2 OPERANDOS NO NULOS */ /* REGISTROS - CONSTANTES (PARA SACAR BUENA NOTA)... 
 					if((op[i].op1 == NULL) || (op[i].op2 == NULL)){
 						printf("ERROR - Missing operand for %s on line %d\n",op[i].instruction, i+1);
 						fprintf(ofp,"ERROR - Missing operand for %s on line %d\n",op[i].instruction, i+1);
 						error++;
 					}
-					break;
+					break;*/
 			}
 			op[i].address = address;                                                      // si la instrucción analizada es una instruccion (no directiva) incrementa la dirección de memoria donde se almacena.
 			/* add (j > 28) for FLIP instruction, - added new instruction */
@@ -780,8 +780,8 @@ void write_program_word(void)                                                   
 				case 27: /* NAMEREG */
 				case 28: /* ADDRESS */
 					break;
-				case 29: /* FLIP */ /* added new instruction */                          // para el caso de instrucciones FLIP.   
-					insert_instruction(flip_id, op[i].address);                          // inserta codigo máquina del codigo de operacion.
+				case 29: /* HASHER */ /* added new instruction */                          // para el caso de instrucciones FLIP.   
+					insert_instruction(hasher_id, op[i].address);                          // inserta codigo máquina del codigo de operacion.
 					if((reg_n = find_namereg(op[i].op1)) != -1)                          // Solo tiene un operando que siempre sera un registro o un namereg, sino error.
 						insert_sXX(reg_n, op[i].address);                                // inserta dodigo maquina del 2do operando si es namereg
 					else if((reg_n = register_number(op[i].op1)) != -1)                  

@@ -1,0 +1,2 @@
+vhdl work "modulo_xor.vhd"
+vhdl work "xor_tb.vhd"

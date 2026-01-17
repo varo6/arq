@@ -12,7 +12,16 @@ entity toplevel is
 						  clk : in std_logic;
 						   rx : in std_logic;
 				         tx : out std_logic;
-		     		      LED : out std_logic);	 --led de comprobacion y reset
+		     		      LED : out std_logic_vector(7 downto 0);
+							
+
+							VGA_out_TOP : out STD_LOGIC_VECTOR(2 downto 0);
+							sinc_h : out STD_LOGIC;
+							sinc_v : out STD_LOGIC;
+							inhibicion_color_top : out STD_LOGIC
+							);	 --led de comprobacion y reset
+							
+							
 end toplevel ;
 
 architecture behavioral of toplevel is
@@ -35,7 +44,7 @@ architecture behavioral of toplevel is
 -----------------------------------------------------------------
 -- declaración de la ROM de programa
 -----------------------------------------------------------------
-  component programa_helloworld_int_FLIP
+  component pruebanuevo
     Port (      address : in std_logic_vector(7 downto 0);
             		   dout : out std_logic_vector(15 downto 0);
                     clk : in std_logic);
@@ -52,13 +61,49 @@ architecture behavioral of toplevel is
 				 in_port_3 : in std_logic_vector(7 downto 0);	--Entrada para CHAR 3
 				 in_port_4 : in std_logic_vector(7 downto 0);	--Entrada para CHAR 4
 				 port_id : in std_logic_vector(7 downto 0);
-				 out_result : out std_logic;
+				 out_result : out std_logic_vector(7 downto 0);
 				 reset : in std_logic;
 				 clk : in std_logic;
-				 writestrobe: in std_logic;
-				 readstrobe: in std_logic);
+				 write_strobe: in std_logic;
+				 read_strobe: in std_logic);
 				 
     end component;
+	 
+
+----------------------------------------------------------------
+-- declaracion del modul VGA
+----------------------------------------------------------------
+	component vga_inter is
+	Port (
+			reset : in STD_LOGIC;
+			enable_25Mhz : in STD_LOGIC;
+			sinc_h	: out  STD_LOGIC;
+			sinc_v	: out  STD_LOGIC;
+			--pixel_cont: out unsigned(9 downto 0);
+			--linea_cont: out unsigned(9 downto 0);
+			inhibicion_color_inter	: out  STD_LOGIC;
+			VGA_out_inter : out STD_LOGIC_VECTOR(2 downto 0); -- va a ser lo que mostremos por pantalla en cada pixel.
+			
+			read_strobe : in STD_LOGIC;
+			port_id : in STD_LOGIC_VECTOR(7 downto 0); -- x"EF"
+			outport : in STD_LOGIC_VECTOR(7 downto 0)			-- 
+			);
+	end component;
+
+----------------------------------------------------------------
+-- declaracion del modulo estados
+----------------------------------------------------------------
+	component estados
+   Port ( 
+        clk             : in  STD_LOGIC;
+        reset           : in  STD_LOGIC;
+        pb_write_strobe : in  STD_LOGIC;
+        pb_port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
+        pb_out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
+        system_locked   : out STD_LOGIC  -- ¡FALTABA ESTA LINEA!
+			);
+	end component;
+	
 -----------------------------------------------------------------
 -- Signals usadas para conectar el picoblaze y la ROM de programa
 -----------------------------------------------------------------
@@ -82,26 +127,30 @@ signal inport1 : std_logic_vector(7 downto 0);
 signal inport2 : std_logic_vector(7 downto 0);
 signal inport3 : std_logic_vector(7 downto 0);
 signal inport4 : std_logic_vector(7 downto 0);
-signal outresult : std_logic;
-
+signal outresult : std_logic_vector(7 downto 0);
+-----------------------------------------------------------------
+-- Signals para salida ESTADOS 
+-----------------------------------------------------------------
+signal s_locked : std_logic;
 
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
-x"0A", x"0D", x"2A", x"20", x"48", x"45", x"4C", x"4C",
-x"4F", x"20", x"49", x"27", x"4D", x"20", x"41", x"4C",
-x"49", x"56", x"45", x"21", x"20", x"3A", x"2D", x"44",
-x"20", x"2A", x"0A", x"0D", x"2A", x"20", x"50", x"52",
-x"45", x"53", x"53", x"20", x"41", x"4E", x"59", x"20",
-x"4B", x"45", x"59", x"20", x"54", x"4F", x"20", x"43",
-x"4F", x"4E", x"54", x"49", x"4E", x"55", x"45", x"20",
-x"2A", x"0A", x"0D", x"00", x"00", x"00", x"00", x"00" );
-
+  x"0A", x"0D", x"41", x"52", x"51", x"20", x"48", x"41",
+  x"53", x"48", x"45", x"52", x"20", x"3A", x"2D", x"44",
+  x"0A", x"0D", x"41", x"4E", x"44", x"52", x"45", x"20",
+  x"43", x"41", x"52", x"4D", x"45", x"4E", x"20", x"56",
+  x"41", x"52", x"4F", x"0A", x"0D", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00",
+  x"00", x"00", x"00", x"00", x"00", x"00", x"00", x"00"
+);
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
-
-	LED <= reset; 	-- para comprobar la programacion encendemos
-						--	un led cada vez que reseteamos
+    -- Conectamos la señal de bloqueo al LED 7 (F9)
+    LED(7) <= s_locked;  
+    -- Apagamos del 0 al 6 para que no molesten ni den error
+    LED(6 downto 0) <= (others => '0');
 
 	read_strobe <= readstrobe;
 	write_strobe <= writestrobe;
@@ -109,7 +158,7 @@ begin
 	in_port <= inport;
 	out_port <= outport;
 	picoint <= NOT rx;
- 	
+	
   processor: picoblaze
     port map(      address => address,
                instruction => instruction,
@@ -122,13 +171,12 @@ begin
                      reset => reset,
                        clk => clk);
 
-  program: programa_helloworld_int_FLIP
+  program: pruebanuevo
     port map(     address => address,
                	     dout => instruction,
                       clk => clk);
 
 
--- ESTO ESTA SIN TERMINAR, HAY QUE DECLARAR TODAS LAS SEÑALES DE ENTRADA Y SALIDA
 	perixor: modulo_xor  
     port map(  
 						in_port_1 => outport,
@@ -141,6 +189,32 @@ begin
                read_strobe => readstrobe,
                      reset => reset,
                        clk => clk);
+							  
+							  
+	modulo_vga: vga_inter
+	port map(
+				reset => reset,
+				enable_25Mhz => clk,
+				sinc_h	=> sinc_h,
+				sinc_v	=> sinc_v,
+				--pixel_cont: out unsigned(9 downto 0);
+				--linea_cont: out unsigned(9 downto 0);
+				inhibicion_color_inter	=> inhibicion_color_top,
+				VGA_out_inter => VGA_out_TOP, -- va a ser lo que mostremos por pantalla en cada pixel.
+			
+				read_strobe => readstrobe,
+				port_id => portid, -- x"EF"
+				outport => outport );
+				
+	mod_estados: estados
+    port map (
+				clk             => clk,
+				reset           => reset,
+				pb_write_strobe => writestrobe, 
+				pb_port_id      => portid,
+				pb_out_port     => outport,
+				system_locked   => s_locked  );
+   		
 	--registra el bit tx del puerto de salida, por si éste cambia
 	txbuff:process(reset, clk)
 	begin
@@ -179,7 +253,8 @@ begin
 -- Multiplexor inport
 inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
-			 out_result when (readstrobe = '1' and portid=x"FA") else
+			 outresult when (readstrobe = '1' and portid=x"FA") else
+			 ("0000000" & s_locked) when (readstrobe = '1' and portid = x"DD") else
 			 x"00";
 
 end behavioral;
