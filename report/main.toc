@@ -1,7 +1,0 @@
-\babel@toc {english}{}\relax 
-\contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Edición del Código VHDL}{3}{chapter.2}%
-\contentsline {section}{\numberline {2.1}1. Sustitución del bus de entrada}{3}{section.2.1}%
-\contentsline {section}{\numberline {2.2}2. Eliminación de \texttt {weQ} y \texttt {weM}}{5}{section.2.2}%
-\contentsline {section}{\numberline {2.3}3. Control de la salida del resultado}{6}{section.2.3}%
-\contentsline {chapter}{\numberline {3}Simulación TestBench}{7}{chapter.3}%
