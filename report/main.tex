@@ -1,0 +1,363 @@
+\documentclass[a4paper, 12pt]{report}
+
+%%%%%%%%%%%%
+% Packages %
+%%%%%%%%%%%%
+\usepackage[english]{babel}
+\usepackage{packages/sleek}
+\usepackage{packages/sleek-title}
+\usepackage{packages/sleek-theorems}
+\usepackage{packages/sleek-listings}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{ragged2e}
+\lstset{
+    basicstyle=\ttfamily\small, 
+    frame=single,              
+    numbers=left,              
+    numberstyle=\tiny,         
+    keywordstyle=\bfseries,    
+    breaklines=true,           
+    captionpos=b,              
+}
+\graphicspath{ {./resources/img/} }
+%%%%%%%%%%%%%%
+% Title-page %
+%%%%%%%%%%%%%%
+
+\logo{./resources/pdf/logo.pdf}
+\institute{Universidad Politécnica de Cartagena}
+\faculty{Arquitectura de Hardware}
+%\department{Department of Anything but Psychology}
+\title{MULTIPLICADOR SECUENCIAL}
+\subtitle{Práctica 1}
+\author{\textit{Autores}\\Carmen Segura Martinez \\ André Yermak Naumenko}
+%\supervisor{Linus \textsc{Torvalds}}
+%\context{A long time ago in a galaxy far, far away...}
+\date{\today}
+
+%%%%%%%%%%%%%%%%
+% Bibliography %
+%%%%%%%%%%%%%%%%
+
+\addbibresource{./resources/bib/references.bib}
+
+%%%%%%%%%%
+% Macros %
+%%%%%%%%%%
+
+\def\tbs{\textbackslash}
+
+%%%%%%%%%%%%
+% Document %
+%%%%%%%%%%%%
+
+% \begin{figure}[H]
+% 	\centering
+% 	\includegraphics[scale=0.5]{maquetainicial.png}
+% 	\caption{Fig. Red Core MPLS (AS65100).}
+% 	\label{fig:maquetainicial}
+% \end{figure}
+
+% \begin{lstlisting}[language=bash, caption={Configuración OSPF en el Router PE1}]
+%     interface Loopback0
+%      ip address 2.2.2.2 255.255.255.255
+%      no shutdown
+%      exit
+    
+%     router ospf 1
+%      router-id 2.2.2.2
+%      network 100.1.0.0 0.0.0.3 area 0
+%      network 2.2.2.2 0.0.0.0 area 0
+%      exit
+% \end{lstlisting}
+
+\begin{document}
+\maketitle
+\romantableofcontents
+\setcounter{section}{0}
+\chapter{Introducción}
+  El objetivo de esta práctica es actualizar y reestructurar la implementación del multiplicador secuencial estudiado en clase, desarrollando una versión alternativa del diseño original. Esta nueva versión busca modificar la forma en que se gestionan las señales de entrada y control, adaptando la arquitectura del sistema sin alterar su funcionamiento básico. 
+
+  En la Figura~\ref{fig:estructuras_multiplicador} se muestran, de forma comparativa, la estructura inicial del multiplicador secuencial y la modificación propuesta. A continuación, se indican los cambios que deben incorporarse en el nuevo diseño:
+
+  \begin{itemize}
+    \item Sustituir el bus de entrada \texttt{inbus} de 8 bits por dos buses: \texttt{inbusQ} de 18 bits y \texttt{inbusM} de 24 bits, con posibilidad de introducir simultáneamente los datos del Multiplicando y del Multiplicador.
+    \item Eliminar de la entidad los puertos de entrada \texttt{weQ} y \texttt{weM} y generar las señales de control equivalentes mediante la FSM.
+    \item Impedir que el resultado parcial del multiplicador aparezca a la salida hasta no obtener el resultado final.
+    \item Modificar el testbench de simulación y comprobar el correcto funcionamiento del nuevo diseño.
+    \item Redactar un informe de la práctica que incluya: portada (Título de la Práctica, Nº de práctica, autores, etc.), documento con los ficheros VHDL modificados y una breve explicación de las modificaciones realizadas y de los principales resultados de simulación.
+  \end{itemize}
+
+  El desarrollo de esta práctica implica adaptar la estructura del multiplicador secuencial para incorporar las nuevas interfaces de entrada y modificar la lógica de control, reemplazando las señales de escritura externas por un control interno gestionado por la FSM. Asimismo, se deberá revisar la secuencia de estados y asegurar que el flujo de datos entre registros sea coherente con las nuevas condiciones de entrada y salida.  
+
+  Finalmente, será necesario realizar una simulación completa que permita validar el funcionamiento correcto del diseño, verificando que el resultado final se presenta únicamente al completarse el proceso de multiplicación y que no se generan valores intermedios en la salida.  
+
+  El informe final deberá reflejar la estructura y comportamiento de esta nueva versión, describiendo la implementación realizada, así como las diferencias entre la arquitectura original (Figura~\ref{fig:estructuras_multiplicador}a) y la versión modificada (Figura~\ref{fig:estructuras_multiplicador}b).
+
+  \begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{img21.jpg}
+      \caption{Estructura de partida del multiplicador secuencial.}
+      \label{fig:estructura_partida}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{img22.png}
+      \caption{Modificación propuesta a la estructura del multiplicador secuencial.}
+      \label{fig:estructura_modificada}
+    \end{subfigure}
+    \caption{Comparación entre la estructura original (a) y la versión modificada (b) del multiplicador secuencial.}
+    \label{fig:estructuras_multiplicador}
+  \end{figure}
+
+\chapter{Edición del Código VHDL}
+
+  \section{1. Sustitución del bus de entrada}
+    En primer lugar, declaramos la nueva estructura de la entidad con la nueva longitud de bits correspondientes (véase Código~\ref{code:entidad}):
+
+    \begin{lstlisting}[language=vhdl, caption={Definición de la entidad con los nuevos buses de entrada.}, label={code:entidad}]
+      entity mult_sec is
+        Port ( inbus_Q  : in std_logic_vector(17 downto 0);
+              inbus_M  : in std_logic_vector(23 downto 0);
+              outbus   : out std_logic_vector(41 downto 0);
+              I        : in std_logic;
+              rst      : in std_logic;
+              clk      : in std_logic);
+      end mult_sec;
+    \end{lstlisting}
+
+    Y lo mismo para nuestras señales internas (Código~\ref{code:arquitectura}):
+
+    \begin{lstlisting}[language=vhdl, caption={Declaración de señales internas de la arquitectura.}, label={code:arquitectura}]
+      architecture Behavioral of mult_sec is
+
+        type type_state is (INICIO, SUMACU, DESDEC);
+        signal state, nextstate: type_state;
+        
+        signal CA, pp: std_logic_vector(24 downto 0);
+        signal Q: std_logic_vector(17 downto 0);
+        signal M: std_logic_vector(23 downto 0);
+        signal init, ld, sh: std_logic;
+        signal cnt: unsigned (4 downto 0);
+        signal Z: std_logic;
+        signal enable_outbus: std_logic;
+
+      begin
+    \end{lstlisting}
+
+    \newpage
+    A continuación, se actualiza el tamaño del registro \texttt{CA} en el proceso de iniciación (Código~\ref{code:registro_CA}):
+
+    \begin{lstlisting}[language=vhdl, caption={Proceso del registro C y A con nuevo tamaño.}, label={code:registro_CA}]
+      -- Registro C y A:
+      process(rst, clk)
+      begin
+        if (rst='1') then
+          CA <= (others=>'0');
+        elsif rising_edge(clk) then
+          if (init='1') then
+            CA <= (others=>'0');
+          elsif (ld='1') then
+            CA <= pp;
+          elsif (sh='1') then
+            CA <= '0' & CA(24 downto 1);
+          end if;
+        end if;
+      end process;
+    \end{lstlisting}
+
+    De la misma forma, se ajustan los registros \texttt{Q} y \texttt{M} para que se adapten al nuevo tamaño de los buses de entrada (Código~\ref{code:registro_QM}):
+
+    \begin{lstlisting}[language=vhdl, caption={Procesos de los registros Q y M.}, label={code:registro_QM}]
+      -- Registro Q:
+      process(rst, clk)
+      begin
+        if (rst='1') then
+          Q <= (others=>'0');
+        elsif rising_edge(clk) then
+          if (init='1') then
+            Q <= inbus_Q(17 downto 0);
+          elsif (sh='1') then
+            Q <= CA(0) & Q(17 downto 1);
+          end if;
+        end if;
+      end process;
+
+      -- Registro M:
+      process(rst, clk)
+      begin
+        if (rst='1') then
+          M <= (others=>'0');
+        elsif rising_edge(clk) then
+          if (init='1') then
+            M <= inbus_M(23 downto 0);
+          end if;
+        end if;
+      end process;
+    \end{lstlisting}
+
+  \section{2. Eliminación de \texttt{weQ} y \texttt{weM}}
+    En este apartado, se eliminan las señales de control \texttt{weQ} y \texttt{weM} de la entidad y se utiliza una única señal de control \texttt{init} para gestionar la carga de los registros \texttt{Q} y \texttt{M}.  
+    Su implementación ya puede observarse en el código anterior (véase el Código~\ref{code:registro_QM}).
+
+    Por otro lado, la señal \texttt{init} se genera y se gestiona en la FSM, como se muestra a continuación:
+    \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:fsm_init}]
+      process(state, I, Q(0), Z)
+        begin
+          init <= '0'; ld <= '0'; sh <= '0'; enable_outbus <= '0';
+          nextstate <= state;
+          case state is
+            when INICIO =>
+              enable_outbus <= '1';
+              if (I='1') then
+                init <= '1';
+                nextstate <= SUMACU;
+              else
+                init <= '0';
+                nextstate <= INICIO;
+              end if;
+            when SUMACU =>
+              enable_outbus <= '0';
+              if (Q(0)='1') then
+                ld <= '1';
+              else
+                ld <= '0';
+              end if;	
+              nextstate <= DESDEC;
+            when DESDEC =>
+              if (Z='1') then
+                nextstate <= INICIO;
+              else
+                nextstate <= SUMACU; 
+              end if;
+              sh <= '1';
+            when others =>
+                  nextstate <= INICIO;
+          end case;
+        end process;
+    \end{lstlisting}
+    
+    Con esta implementación, ya no es necesario de usar dos ciclos de reloj para cargar los registros \texttt{Q} y \texttt{M}, sino que ambos se cargan simultáneamente en un único ciclo cuando la señal \texttt{init} se activa.
+  \section{3. Control de la salida del resultado}
+
+    La forma en la que se ha controlado la salida del resultado es mediante la señal \texttt{enable\_outbus}, 
+    que se activa únicamente en el estado \texttt{INICIO} de la FSM (véase Código~\ref{code:fsm_init}).
+    Una forma sencilla que, llegado al estado \texttt{INICIO}, significa que la operación ha finalizado, por lo tanto no requiere nada más que una verificación al cargar outbus:
+    
+    \begin{lstlisting}[language=vhdl, caption={Carga del bus de salida.}, label={code:outbus}]
+      --Salida:
+	    outbus <= (CA(23 downto 0) & Q) when (enable_outbus= '1') else (others => '0');
+    \end{lstlisting}
+\chapter{Simulación TestBench}
+  Una vez realizado el rediseño del multiplicador secuencial, se procede a actualizar también el \texttt{testbench} para adaptarlo a las nuevas características y restricciones del sistema.
+  La declaración del compoente y sus puertos, las señales internas y la instancia del DUT se muestran en el Código~\ref{code:testbench}.
+
+  Tras la declaración, asignamos valores a las señales para verificar si el diseño funciona correctamente.
+  En primer lugar, se genera un producto de 13*200 (resultado = 2600) y luego otro arbitrario de 123.277*9.381.064 (resultado = 1.156.469.426.728) mostrado en el código~\ref{code:simulacion}.
+  
+  Podemos verificar el correcto funcionamiento del diseño observando las señales en la simulación (Figura~\ref{fig:simulacion}).
+
+  \newpage
+  \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:testbench}]
+    ARCHITECTURE behavior OF testbench_mult_sec IS 
+
+      COMPONENT mult_sec
+      PORT(
+        inbus_Q  : IN std_logic_vector(17 downto 0);
+        inbus_M  : IN std_logic_vector(23 downto 0);
+        I        : IN std_logic;
+        rst      : IN std_logic;
+        clk      : IN std_logic;          
+        outbus   : OUT std_logic_vector(41 downto 0)
+      );
+      END COMPONENT;
+      
+      SIGNAL inbus_Q :  std_logic_vector(17 downto 0) := (others=>'0');
+      SIGNAL inbus_M :  std_logic_vector(23 downto 0) := (others=>'0');
+      SIGNAL outbus  :  std_logic_vector(41 downto 0);
+      SIGNAL I       :  std_logic := '0';
+      SIGNAL rst     :  std_logic := '1';
+      SIGNAL clk     :  std_logic := '0';
+
+      constant periodo: time := 100 ns;
+
+    BEGIN
+
+    	uut: mult_sec 
+      PORT MAP(
+        inbus_Q => inbus_Q,
+        inbus_M => inbus_M,
+        outbus  => outbus,
+        I       => I,
+        rst     => rst,
+        clk     => clk
+      );
+  \end{lstlisting}
+
+  \newpage
+  \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:simulacion}]
+    	-- Estímulos
+      tb : PROCESS
+      BEGIN
+        rst <= '1';					
+        wait for 2*periodo;
+        rst <= '0';					
+
+        -- Carga de operandos
+        inbus_M <= "000000000000000011001000"; -- M = 200
+        inbus_Q <= "000000000000001101";       -- Q = 13
+        wait for 2*periodo;
+
+        I <= '1';  -- inicio de la multiplicación
+        wait for periodo;
+        I <= '0';
+
+        -- Espera suficiente tiempo para completar el proceso
+        wait for 100*periodo;
+        
+        -- Carga de operandos
+        inbus_M <= "100011110010010011001000"; -- M = 9381064
+        inbus_Q <= "011110000110001101";       -- Q = 123277
+        wait for 2*periodo;
+
+        I <= '1';  -- inicio de la multiplicación
+        wait for periodo;
+        I <= '0';
+
+        -- Espera suficiente tiempo para completar el proceso
+        wait for 100*periodo;
+        wait; 
+      END PROCESS;
+  \end{lstlisting}
+
+  
+  \begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image.png}
+      \caption{Primer producto realizado}
+      \label{fig:producto_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image2.png}
+      \caption{Segundo producto realizado}
+      \label{fig:producto_b}
+    \end{subfigure}
+    \caption{Simulación del testbench mostrando los dos productos realizados.}
+    \label{fig:simulacion}
+  \end{figure}
+\appendix
+\end{document}
