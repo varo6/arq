@@ -7,37 +7,37 @@ entity estados is
         clk             : in  STD_LOGIC;
         reset           : in  STD_LOGIC;
         
-        -- Comunicación PicoBlaze
-        pb_write_strobe : in  STD_LOGIC;
-        pb_port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
-        pb_out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
+        -- Comunicaciï¿½n PicoBlaze
+        write_strobe : in  STD_LOGIC;
+        port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
+        out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
         
         -- Salida
-        system_locked   : out STD_LOGIC 
+        read_strobe   : out STD_LOGIC_VECTOR(7 downto 0);
     );
 end estados;
 
 architecture Behavioral of estados is
 
-    -- 1. Definición de Estados
+    -- 1. Definiciï¿½n de Estados
     type state_type is (estado_bloqueo, estado_escucha, estado_error1, estado_error2, estado_bien, estado_error3);
     
-    -- 2. Señales de Estado (Actual y Siguiente)
+    -- 2. Seï¿½ales de Estado (Actual y Siguiente)
     signal current_state : state_type;
     signal next_state    : state_type;
     
-    -- Configuración del Timer (5 segundos a 50 MHz)
+    -- Configuraciï¿½n del Timer (5 segundos a 50 MHz)
     constant CLK_FREQ  : integer := 50000000; 
     constant MAX_COUNT : integer := 5 * CLK_FREQ; 
     signal timer_counter : integer range 0 to MAX_COUNT;
     
-    -- Puerto de comunicación (x"DD")
+    -- Puerto de comunicaciï¿½n (x"DD")
     constant PORT_CMD : std_logic_vector(7 downto 0) := x"DD";
 
 begin
 
     -------------------------------------------------------------------------
-    -- PROCESO 1: SÍNCRONO (Memoria y Contadores)
+    -- PROCESO 1: Sï¿½NCRONO (Memoria y Contadores)
     -- Se encarga de mover current_state <= next_state
     -- Y de contar el tiempo.
     -------------------------------------------------------------------------
@@ -51,7 +51,7 @@ begin
             -- Actualizamos el estado
             current_state <= next_state;
             
-            -- Lógica del Contador (Solo cuenta si estamos en BLOQUEO)
+            -- Lï¿½gica del Contador (Solo cuenta si estamos en BLOQUEO)
             if current_state = estado_bloqueo then
                 if timer_counter < MAX_COUNT then
                     timer_counter <= timer_counter + 1;
@@ -63,10 +63,10 @@ begin
     end process;
 
     -------------------------------------------------------------------------
-    -- PROCESO 2: COMBINACIONAL (Lógica de Transición y Salida)
-    -- Decide next_state basándose en current_state y entradas.
+    -- PROCESO 2: COMBINACIONAL (Lï¿½gica de Transiciï¿½n y Salida)
+    -- Decide next_state basï¿½ndose en current_state y entradas.
     -------------------------------------------------------------------------
-    comb_proc: process(current_state, pb_write_strobe, pb_port_id, pb_out_port, timer_counter)
+    comb_proc: process(current_state, write_strobe, port_id, out_port, timer_counter)
     begin
         -- Valores por defecto (para evitar latches)
         next_state    <= current_state;
@@ -89,10 +89,10 @@ begin
             when estado_escucha =>
                 system_locked <= '0';
                 
-                if (pb_write_strobe = '1' and pb_port_id = PORT_CMD) then
-                    if pb_out_port = x"00" then      -- Acierto
+                if (write_strobe = '1' and port_id = PORT_CMD) then
+                    if out_port = x"00" then      -- Acierto
                         next_state <= estado_bien;
-                    elsif pb_out_port = x"FF" then   -- Fallo
+                    elsif out_port = x"FF" then   -- Fallo
                         next_state <= estado_error1;
                     end if;
                 end if;
@@ -101,10 +101,10 @@ begin
             when estado_error1 =>
                 system_locked <= '0';
                 
-                if (pb_write_strobe = '1' and pb_port_id = PORT_CMD) then
-                    if pb_out_port = x"00" then      -- Acierto
+                if (write_strobe = '1' and port_id = PORT_CMD) then
+                    if out_port = x"00" then      -- Acierto
                         next_state <= estado_bien;
-                    elsif pb_out_port = x"FF" then   -- Fallo
+                    elsif out_port = x"FF" then   -- Fallo
                         next_state <= estado_error2;
                     end if;
                 end if;
@@ -113,22 +113,22 @@ begin
             when estado_error2 =>
                 system_locked <= '0';
                 
-                if (pb_write_strobe = '1' and pb_port_id = PORT_CMD) then
-                    if pb_out_port = x"00" then      -- Acierto
+                if (write_strobe = '1' and port_id = PORT_CMD) then
+                    if out_port = x"00" then      -- Acierto
                         next_state <= estado_bien;
-                    elsif pb_out_port = x"FF" then   -- Fallo
+                    elsif out_port = x"FF" then   -- Fallo
                         next_state <= estado_error3;
                     end if;
                 end if;
 
             -- 5. ERROR 3 (Fallo final -> Ir a bloqueo)
             when estado_error3 =>
-                -- Transición incondicional al bloqueo
+                -- Transiciï¿½n incondicional al bloqueo
                 next_state <= estado_bloqueo;
 
             -- 6. BIEN (Acierto -> Ir a bloqueo)
             when estado_bien =>
-                -- Transición incondicional al bloqueo
+                -- Transiciï¿½n incondicional al bloqueo
                 next_state <= estado_bloqueo;
                 
         end case;
