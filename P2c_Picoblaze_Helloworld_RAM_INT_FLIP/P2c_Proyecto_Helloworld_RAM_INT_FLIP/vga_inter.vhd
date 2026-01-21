@@ -70,7 +70,7 @@ signal pixel_cont: unsigned(9 downto 0);
 signal linea_cont: unsigned(9 downto 0);
 
 signal inhibicion_color_inter_int: std_logic;
-signal VGA_out_inter_int : std_logic_vector(2 downto 0);
+signal estado_actual: std_logic_vector(7 downto 0);
 begin
 
 	modulo_vga: vga
@@ -86,14 +86,23 @@ begin
 				
 				
 
--- Escritura en VGA
--- TODO: CUANTO TIEMPO VA A ESTAR ACTIVADO DE UN COLOR. SEGUN ESTA LOGICA, EN EL MOMENTO EN EL QUE CAMBIE EL PORTID
--- DEJA DE MOSTRAR EL COLOR O EL READSTROBE. FSM <- solucion 1. TIMER simple <- solucion 2
+-- Captura el estado desde el bus Picoblaze
+process (reset, enable_25Mhz)
+begin
+	if (reset = '1') then
+		estado_actual <= "10000000"; -- Estado inicial de bloqueo
+	elsif rising_edge(enable_25Mhz) then
+		if (read_strobe = '1' and port_id = x"DD") then
+			estado_actual <= outport;
+		end if;
+	end if;
+end process;
 
+-- Escritura en VGA
 process (reset,enable_25Mhz) 
 	begin 
 		if (reset = '1') then
-			VGA_out_inter_int <= (others => '0');
+			VGA_out_inter <= (others => '0');
 			
 			-- esquina final de la pantalla
 			pos_x <= "1010000000"; -- 640
@@ -105,37 +114,30 @@ process (reset,enable_25Mhz)
 		
 		-- VERIFICAMOS AQUI LAS RESTRICCIONES para poder pintar por pantalla
 		
-			if (read_strobe = '1' and port_id = x"EF") then
-				if (inhibicion_color_inter_int = '1') then
-					VGA_out_inter_int <= (others => '0');
-				else
-					if (pixel_cont <= pos_x) then
-						if (linea_cont <= pos_y) then --dentro de la pantalla
-							
-							-- COMO ESTAMOS DENTRO DE LA PANTALLA ESCRIBIMOS EL COLOR QUE DESEAMOS AQUI.
-							
-							if(outport = "00000000") then	-- Signal contra correcta. Sabiendo que la signal va dirigida a la VGA		
-								VGA_out_inter_int <= "010";
-							else							-- Signal contra incorrecta
-								VGA_out_inter_int <= "100";
-							end if;
-						else								--columna no coincide
-							VGA_out_inter_int <= (others => '0');
-						end if;
-					else									--fila no coincide
-						VGA_out_inter_int <= (others => '0');
+			if (inhibicion_color_inter_int = '1') then
+				VGA_out_inter <= (others => '0');
+			else
+				if (pixel_cont <= pos_x and linea_cont <= pos_y) then
+					
+					-- Seleccionar color según el estado
+					if (estado_actual = "10000001") then
+						-- Bloqueo con error -> ROJO
+						VGA_out_inter <= "100";
+					elsif (estado_actual = "10000010") then
+						-- Bloqueo acertado -> VERDE
+						VGA_out_inter <= "010";
+					else
+						-- Todos los demás estados -> BLANCO
+						VGA_out_inter <= "111";
 					end if;
+				else
+					VGA_out_inter <= (others => '0');
 				end if;
-				
-			else											--no esta activado
-				VGA_out_inter_int <= (others => '0');
 			end if;
 		end if;
 end process;
 
 inhibicion_color_inter <= inhibicion_color_inter_int;
-
-VGA_out_inter <= VGA_out_inter_int;
 
 end Behavioral;
 
