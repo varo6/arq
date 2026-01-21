@@ -11,7 +11,7 @@ entity estados is
         read_strobe: in std_logic;
         port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
         out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
-        out_result : out std_logic_vector(7 downto 0)
+        out_result : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end estados;
 
@@ -129,12 +129,14 @@ begin
             when estado_error3 =>
                 flag <= "01";
                 out_result <= "00000100";
+
                 next_state <= estado_bloqueo;
 
             -- 6. BIEN (Acierto -> Ir a bloqueo)
             when estado_bien =>
                 flag <= "10";
                 out_result <= "00001000";
+
                 next_state <= estado_bloqueo;
                 
         end case;

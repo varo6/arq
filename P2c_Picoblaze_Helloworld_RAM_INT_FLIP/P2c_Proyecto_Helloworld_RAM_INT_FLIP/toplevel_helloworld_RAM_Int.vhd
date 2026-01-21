@@ -42,7 +42,7 @@ architecture behavioral of toplevel is
     end component;
 
 -----------------------------------------------------------------
--- declaración de la ROM de programa
+-- declaraciï¿½n de la ROM de programa
 -----------------------------------------------------------------
   component pruebanuevo
     Port (      address : in std_logic_vector(7 downto 0);
@@ -97,10 +97,10 @@ architecture behavioral of toplevel is
    Port ( 
         clk             : in  STD_LOGIC;
         reset           : in  STD_LOGIC;
-        pb_write_strobe : in  STD_LOGIC;
-        pb_port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
-        pb_out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
-        system_locked   : out STD_LOGIC  -- ¡FALTABA ESTA LINEA!
+        write_strobe : in  STD_LOGIC;
+        port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
+        out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
+        out_result   : out STD_LOGIC_VECTOR(7 downto 0)
 			);
 	end component;
 	
@@ -131,7 +131,7 @@ signal outresult : std_logic_vector(7 downto 0);
 -----------------------------------------------------------------
 -- Signals para salida ESTADOS 
 -----------------------------------------------------------------
-signal s_locked : std_logic;
+signal mis_estados : std_logic;
 
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
@@ -147,8 +147,8 @@ signal RAM : ram_type := (
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
-    -- Conectamos la señal de bloqueo al LED 7 (F9)
-    LED(7) <= s_locked;  
+    -- Conectamos la seï¿½al de bloqueo al LED 7 (F9)
+    LED(7) <= mis_estados(7);
     -- Apagamos del 0 al 6 para que no molesten ni den error
     LED(6 downto 0) <= (others => '0');
 
@@ -213,9 +213,9 @@ begin
 				pb_write_strobe => writestrobe, 
 				pb_port_id      => portid,
 				pb_out_port     => outport,
-				system_locked   => s_locked  );
+				out_result   => mis_estados  );
    		
-	--registra el bit tx del puerto de salida, por si éste cambia
+	--registra el bit tx del puerto de salida, por si ï¿½ste cambia
 	txbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -227,7 +227,7 @@ begin
 		end if;
 	end process;
 	
-	--añade 7ceros a rx para meterlos al puerto de entrada cuando se lea
+	--aï¿½ade 7ceros a rx para meterlos al puerto de entrada cuando se lea
 	rxbuff:process(reset, clk)
 	begin
 		if (reset='1') then
@@ -254,7 +254,7 @@ begin
 inport <= RAM_out when (readstrobe = '1' and portid<x"40") else
 			 rxbuff_out when (readstrobe = '1' and portid=x"FF") else
 			 outresult when (readstrobe = '1' and portid=x"FA") else
-			 ("0000000" & s_locked) when (readstrobe = '1' and portid = x"DD") else
+			 mis_estados when (readstrobe = '1' and portid = x"DD") else
 			 x"00";
 
 end behavioral;
