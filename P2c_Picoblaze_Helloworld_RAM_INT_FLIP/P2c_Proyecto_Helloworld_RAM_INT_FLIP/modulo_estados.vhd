@@ -7,72 +7,77 @@ entity estados is
         clk             : in  STD_LOGIC;
         reset           : in  STD_LOGIC;
         
-        -- Comunicaci�n PicoBlaze
         write_strobe : in  STD_LOGIC;
+        read_strobe: in std_logic;
         port_id      : in  STD_LOGIC_VECTOR(7 downto 0);
         out_port     : in  STD_LOGIC_VECTOR(7 downto 0);
-        
-        -- Salida
-        read_strobe   : out STD_LOGIC_VECTOR(7 downto 0);
+        out_result : out std_logic_vector(7 downto 0)
     );
 end estados;
 
 architecture Behavioral of estados is
 
-    -- 1. Definici�n de Estados
-    type state_type is (estado_bloqueo, estado_escucha, estado_error1, estado_error2, estado_bien, estado_error3);
+    -- Estados FSM
+    type state_type is (estado_bloqueo, estado_escucha, estado_error1, estado_error2, estado_error3, estado_bien);
     
-    -- 2. Se�ales de Estado (Actual y Siguiente)
-    signal current_state : state_type;
+    signal estado_actual : state_type;
     signal next_state    : state_type;
     
-    -- Configuraci�n del Timer (5 segundos a 50 MHz)
-    constant CLK_FREQ  : integer := 50000000; 
-    constant MAX_COUNT : integer := 5 * CLK_FREQ; 
-    signal timer_counter : integer range 0 to MAX_COUNT;
+    -- 5 segundos a 50000000 MHz = 250000000 ciclos
+    signal timer_1s : std_logic_vector(25 downto 0); -- "10111110101111000010000000" = 50.000.000 = 1 segundo
+    signal count_5 : std_logic_vector(2 downto 0); -- "101" = 5
     
-    -- Puerto de comunicaci�n (x"DD")
-    constant PORT_CMD : std_logic_vector(7 downto 0) := x"DD";
-
+    signal flag : std_logic_vector(1 downto 0); -- "01" si viene de error, "10" si viene de acierto
+    signal timer_done : std_logic;
 begin
-
-    -------------------------------------------------------------------------
-    -- PROCESO 1: S�NCRONO (Memoria y Contadores)
-    -- Se encarga de mover current_state <= next_state
-    -- Y de contar el tiempo.
-    -------------------------------------------------------------------------
-    sync_proc: process(clk, reset)
+    process(clk, reset)
     begin
-        if reset = '1' then
-            current_state <= estado_bloqueo;
-            timer_counter <= 0;
+        if (reset = '1') then
+            estado_actual <= estado_bloqueo;
+
             
         elsif rising_edge(clk) then
-            -- Actualizamos el estado
-            current_state <= next_state;
+            estado_actual <= next_state;
+        end if;
+    end process;
+
+begin
+    process(clk, reset,estado_actual)
+    begin
+        if (reset = '1') then
+            timer_1s <= (others =>'0');
+            count_5 <= (others =>'0');
             
-            -- L�gica del Contador (Solo cuenta si estamos en BLOQUEO)
-            if current_state = estado_bloqueo then
-                if timer_counter < MAX_COUNT then
-                    timer_counter <= timer_counter + 1;
+        elsif rising_edge(clk) then
+            if (estado_actual = estado_bloqueo) then
+                timer_done <= '0';
+                if (count_5 < 5) then
+                    if (timer_1s = "10111110101111000010000000") then
+                        timer_1s <= (others => '0');
+                        count_5  <= count_5 + 1;
+                    else
+                        timer_1s <= timer_1s + 1;
+                    end if;
+                else
+                    count_5 <= (others => '0');
+                    timer_1s <= (others => '0');
                 end if;
+                
             else
-                timer_counter <= 0; -- Resetear contador al salir del bloqueo
+                timer_done <= '1';
+                timer_1s <= (others => '0');
+                count_5  <= (others => '0');
             end if;
         end if;
     end process;
 
-    -------------------------------------------------------------------------
-    -- PROCESO 2: COMBINACIONAL (L�gica de Transici�n y Salida)
-    -- Decide next_state bas�ndose en current_state y entradas.
-    -------------------------------------------------------------------------
-    comb_proc: process(current_state, write_strobe, port_id, out_port, timer_counter)
+    process(estado_actual, write_strobe, port_id, out_port, timer_counter)
     begin
         -- Valores por defecto (para evitar latches)
-        next_state    <= current_state;
+        next_state    <= estado_actual;
         system_locked <= '0';
 
-        case current_state is
+        case estado_actual is
             
             -- 1. ESTADO DE BLOQUEO (Esperando al Timer)
             when estado_bloqueo =>
