@@ -7,208 +7,245 @@
   7   0              ;declaracion de constantes y variables
   8   0              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                  
   9   0              :CONSTANT   RS232        FF           ; Puerto serie
- 10   0              :CONSTANT   FSM_PORT     DD           ; NUEVO: Puerto para hablar con la FSM (Hardware)
+ 10   0              :CONSTANT   FSM_PORT     DD           ; Puerto para hablar con la FSM
  11   0              :CONSTANT   VGA_PORT     EF           ; Puerto para VGA (opcional)
  12   0              
- 13   0              ; Puertos de caracteres para el XOR
- 14   0              :CONSTANT   CHAR1        FE           
- 15   0              :CONSTANT   CHAR2        FD           
- 16   0              :CONSTANT   CHAR3        FC           
- 17   0              :CONSTANT   CHAR4        FB           
- 18   0              :CONSTANT   XOR_RES      FA           ; Resultado del XOR
- 19   0              
- 20   0              :NAMEREG    S1           TXREG        
- 21   0              :NAMEREG    S2           RXREG        
- 22   0              :NAMEREG    S3           CONTBIT      
- 23   0              :NAMEREG    S4           CONT1        
- 24   0              :NAMEREG    S5           CONT2        
- 25   0              ;
- 26   0              :ADDRESS    00           
- 27   0              
- 28   0              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 29   0              ; Inicio del programa
- 30   0              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 31   0              :DISABLE    INTERRUPT    
- 32   1              
- 33   1 START        
- 34   1              ; --- NUEVO: CHEQUEO DE BLOQUEO (LED) ---
- 35   1              ; Antes de imprimir nada, miramos si el hardware nos tiene castigados
- 36   1              :INPUT      S0           FSM_PORT     
- 37   2              :AND        S0           01           ; Miramos el bit 0 (s_locked)
- 38   3              :JUMP       NZ           START        ; Si es 1 (LED encendido), volvemos a empezar (espera)
- 39   4              
- 40   4              ; --- SI LLEGAMOS AQUI, EL SISTEMA ESTA LIBRE ---
- 41   4              
- 42   4              ; Instrucciones para la parte1 (Imprimir RAM / Vuestra firma)
- 43   4              :LOAD       S7           00           
- 44   5 PARTE1       
- 45   5              :INPUT      TXREG        S7           
- 46   6              :ADD        TXREG        00           
- 47   7              :JUMP       Z            PARTE2       ; Si es 00 (fin de cadena), vamos a esperar input
- 48   8              :CALL       TRANSMITE    
- 49   9              :ADD        S7           01           
- 50   A              :JUMP       PARTE1       
- 51   B              
- 52   B              ; Instrucciones para la parte2 (Bucle de espera de usuario)
- 53   B PARTE2       
- 54   B              :ENABLE     INTERRUPT    ; Activamos interrupcion para poder escribir
- 55   C BUCLE_ESPERA 
- 56   C              ; Comprobamos constantemente si el hardware nos bloquea de repente
- 57   C              :INPUT      S0           FSM_PORT     
- 58   D              :AND        S0           01           
- 59   E              :JUMP       NZ           START        ; Si nos bloquean, saltamos al inicio (desactiva int)
- 60   F              
- 61   F              :JUMP       BUCLE_ESPERA ; Si no, seguimos esperando
- 62  10              
- 63  10              
- 64  10              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 65  10              ; Rutina de recepcion de caracteres
- 66  10              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 67  10 RECIBE       
- 68  10              :INPUT      RXREG        RS232        
- 69  11              :AND        RXREG        80           
- 70  12              :JUMP       NZ           RECIBE       
- 71  13              :CALL       WAIT_05BIT   
- 72  14              
- 73  14              :LOAD       CONTBIT      09           
- 74  15 NEXT_RX_BIT  
- 75  15              :CALL       WAIT_1BIT    
- 76  16              :SR0        RXREG        
- 77  17              :INPUT      S0           RS232        
- 78  18              :AND        S0           80           
- 79  19              :OR         RXREG        S0           
- 80  1A              :SUB        CONTBIT      01           
- 81  1B              :JUMP       NZ           NEXT_RX_BIT  
- 82  1C              :RETURN     
- 83  1D              
- 84  1D              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 85  1D              ; Rutina de transmision de caracteres
- 86  1D              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- 87  1D TRANSMITE    
- 88  1D              :LOAD       S0           00           
- 89  1E              :OUTPUT     S0           RS232        
- 90  1F              :CALL       WAIT_1BIT    
- 91  20              
- 92  20              :LOAD       CONTBIT      08           
- 93  21 NEXT_TX_BIT  
- 94  21              :OUTPUT     TXREG        RS232        
- 95  22              :CALL       WAIT_1BIT    
- 96  23              :SR0        TXREG        
- 97  24              :SUB        CONTBIT      01           
- 98  25              :JUMP       NZ           NEXT_TX_BIT  
- 99  26              
-100  26              :LOAD       S0           FF           
-101  27              :OUTPUT     S0           RS232        
-102  28              :CALL       WAIT_1BIT    
-103  29              :RETURN     
-104  2A              
-105  2A              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-106  2A              ; Rutinas de Tiempos (Drivers)
-107  2A              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-108  2A WAIT_1BIT    :LOAD       CONT1        03           
-109  2B ESPERA2      :LOAD       CONT2        22           
-110  2C ESPERA1      :SUB        CONT2        01           
-111  2D              :JUMP       NZ           ESPERA1      
-112  2E              :SUB        CONT1        01           
-113  2F              :JUMP       NZ           ESPERA2      
-114  30              :RETURN     
-115  31              
-116  31 WAIT_05BIT   :LOAD       CONT1        03           
-117  32 ESPERA4      :LOAD       CONT2        10           
-118  33 ESPERA3      :SUB        CONT2        01           
-119  34              :JUMP       NZ           ESPERA3      
-120  35              :SUB        CONT1        01           
-121  36              :JUMP       NZ           ESPERA4      
-122  37              :RETURN     
-123  38              
-124  38              
-125  38              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-126  38              ; RUTINA HASHEA (Recibe, Eco, Hash)
-127  38              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-128  38 HASHEA       
-129  38              :CALL       RECIBE       
-130  39              :LOAD       TXREG        RXREG        
-131  3A              :CALL       TRANSMITE    
-132  3B              :HASHER     RXREG        
-133  3C              :RETURN     
-134  3D              
-135  3D SALTOLINEA   
-136  3D              :LOAD       TXREG        0D           ; CR
-137  3E              :CALL       TRANSMITE    
-138  3F              :LOAD       TXREG        0A           ; LF
-139  40              :CALL       TRANSMITE    
-140  41              :RETURN     
-141  42              
-142  42              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-143  42              ; MENSAJES (Mal / Bien)
-144  42              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-145  42 RUTINAMAL    
-146  42              :CALL       SALTOLINEA   
-147  43              :LOAD       TXREG        6D           ; 'm'
-148  44              :CALL       TRANSMITE    
-149  45              :LOAD       TXREG        61           ; 'a'
-150  46              :CALL       TRANSMITE    
-151  47              :LOAD       TXREG        6C           ; 'l'
-152  48              :CALL       TRANSMITE    
-153  49              :JUMP       FIN          
-154  4A              
-155  4A RUTINABIEN   
-156  4A              :CALL       SALTOLINEA   
-157  4B              :LOAD       TXREG        62           ; 'b'
-158  4C              :CALL       TRANSMITE    
-159  4D              :LOAD       TXREG        69           ; 'i'
-160  4E              :CALL       TRANSMITE    
-161  4F              :LOAD       TXREG        65           ; 'e'
-162  50              :CALL       TRANSMITE    
-163  51              :LOAD       TXREG        6E           ; 'n'
-164  52              :CALL       TRANSMITE    
-165  53              :JUMP       FIN          
-166  54              
-167  54 FIN          
-168  54              ; (Opcional) Imprimir el código de error si quieres debug
-169  54              ; LOAD    txreg, rxreg
-170  54              ; CALL    transmite
-171  54              :RETURN     
-172  55              
-173  55              
-174  55              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-175  55              ; RUTINA DE ATENCION A LA INTERRUPCION
-176  55              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-177  55 INTERRUP     
-178  55              :DISABLE    INTERRUPT    
-179  56              
-180  56              ; Recibimos y hasheamos los 4 caracteres
-181  56              :CALL       HASHEA       
-182  57              :OUTPUT     RXREG        FE           
-183  58              
-184  58              :CALL       HASHEA       
-185  59              :OUTPUT     RXREG        FD           
-186  5A              
-187  5A              :CALL       HASHEA       
-188  5B              :OUTPUT     RXREG        FC           
-189  5C              
-190  5C              :CALL       HASHEA       
-191  5D              :OUTPUT     RXREG        FB           
-192  5E              
-193  5E              :CALL       WAIT_05BIT   
-194  5F              
-195  5F              ; --- LEER RESULTADO DEL XOR ---
-196  5F              :INPUT      RXREG        FA           ; Leemos resultado (00 o FF)
-197  60              
-198  60              ; --- NUEVO: AVISAR AL HARDWARE ---
-199  60              ; Esto es vital: le decimos a la FSM si hemos acertado o fallado
-200  60              :OUTPUT     RXREG        FSM_PORT     
-201  61              
-202  61              ; Tambien lo mandamos al VGA (codigo original)
-203  61              :OUTPUT     RXREG        EF           
-204  62              
-205  62              ; Comprobamos resultado para el usuario
-206  62              :OR         RXREG        00           
-207  63              :CALL       Z            RUTINABIEN   ; Si es 0 -> Bien
-208  64              :CALL       NZ           RUTINAMAL    ; Si no es 0 -> Mal (use CALL NZ para seguridad)
-209  65              
-210  65              ; Volvemos al start para comprobar si el hardware nos ha bloqueado
-211  65              :RETURNI    ENABLE       
-212  66              
-213  FF              :ADDRESS    FF           
-214  FF              :JUMP       INTERRUP     
+ 13   0              :NAMEREG    S1           TXREG        
+ 14   0              :NAMEREG    S2           RXREG        
+ 15   0              :NAMEREG    S3           CONTBIT      
+ 16   0              :NAMEREG    S4           CONT1        
+ 17   0              :NAMEREG    S5           CONT2        
+ 18   0              ;
+ 19   0              :ADDRESS    00           
+ 20   0              
+ 21   0              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 22   0              ; Inicio del programa
+ 23   0              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 24   0              :DISABLE    INTERRUPT    
+ 25   1              
+ 26   1 START        
+ 27   1              ; --- NUEVO: CHEQUEO DE BLOQUEO (LED) ---
+ 28   1              ; Antes de imprimir nada, miramos si el hardware nos tiene castigados
+ 29   1              :INPUT      S0           FSM_PORT     
+ 30   2              :AND        S0           80           
+ 31   3              :JUMP       NZ           START        ; Si es 1 (LED encendido), volvemos a empezar (espera)
+ 32   4              
+ 33   4              ; --- SI LLEGAMOS AQUI, EL SISTEMA ESTA LIBRE ---
+ 34   4              
+ 35   4              ; Instrucciones para la parte1 (Imprimir RAM / Vuestra firma)
+ 36   4              :LOAD       S7           00           
+ 37   5 PARTE1       
+ 38   5              :INPUT      TXREG        S7           
+ 39   6              :ADD        TXREG        00           
+ 40   7              :JUMP       Z            PARTE2       ; Si es 00 (fin de cadena), vamos a esperar input
+ 41   8              :CALL       TRANSMITE    
+ 42   9              :ADD        S7           01           
+ 43   A              :JUMP       PARTE1       
+ 44   B              
+ 45   B              ; Instrucciones para la parte2 (Bucle de espera de usuario)
+ 46   B PARTE2       
+ 47   B              :ENABLE     INTERRUPT    ; Activamos interrupcion para poder escribir
+ 48   C BUCLE_ESPERA 
+ 49   C              ; Comprobamos constantemente si el hardware nos bloquea de repente
+ 50   C              :INPUT      S0           FSM_PORT     
+ 51   D              :AND        S0           80           
+ 52   E              :JUMP       NZ           START        ; Si nos bloquean, saltamos al inicio (desactiva int)
+ 53   F              
+ 54   F              :JUMP       BUCLE_ESPERA ; Si no, seguimos esperando
+ 55  10              
+ 56  10              
+ 57  10              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 58  10              ; Rutina de recepcion de caracteres
+ 59  10              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 60  10 RECIBE       
+ 61  10              :INPUT      RXREG        RS232        
+ 62  11              :AND        RXREG        80           
+ 63  12              :JUMP       NZ           RECIBE       
+ 64  13              :CALL       WAIT_05BIT   
+ 65  14              
+ 66  14              :LOAD       CONTBIT      09           
+ 67  15 NEXT_RX_BIT  
+ 68  15              :CALL       WAIT_1BIT    
+ 69  16              :SR0        RXREG        
+ 70  17              :INPUT      S0           RS232        
+ 71  18              :AND        S0           80           
+ 72  19              :OR         RXREG        S0           
+ 73  1A              :SUB        CONTBIT      01           
+ 74  1B              :JUMP       NZ           NEXT_RX_BIT  
+ 75  1C              :RETURN     
+ 76  1D              
+ 77  1D              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 78  1D              ; Rutina de transmision de caracteres
+ 79  1D              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 80  1D TRANSMITE    
+ 81  1D              :LOAD       S0           00           
+ 82  1E              :OUTPUT     S0           RS232        
+ 83  1F              :CALL       WAIT_1BIT    
+ 84  20              
+ 85  20              :LOAD       CONTBIT      08           
+ 86  21 NEXT_TX_BIT  
+ 87  21              :OUTPUT     TXREG        RS232        
+ 88  22              :CALL       WAIT_1BIT    
+ 89  23              :SR0        TXREG        
+ 90  24              :SUB        CONTBIT      01           
+ 91  25              :JUMP       NZ           NEXT_TX_BIT  
+ 92  26              
+ 93  26              :LOAD       S0           FF           
+ 94  27              :OUTPUT     S0           RS232        
+ 95  28              :CALL       WAIT_1BIT    
+ 96  29              :RETURN     
+ 97  2A              
+ 98  2A              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 99  2A              ; Rutinas de Tiempos (Drivers)
+100  2A              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+101  2A WAIT_1BIT    :LOAD       CONT1        03           
+102  2B ESPERA2      :LOAD       CONT2        22           
+103  2C ESPERA1      :SUB        CONT2        01           
+104  2D              :JUMP       NZ           ESPERA1      
+105  2E              :SUB        CONT1        01           
+106  2F              :JUMP       NZ           ESPERA2      
+107  30              :RETURN     
+108  31              
+109  31 WAIT_05BIT   :LOAD       CONT1        03           
+110  32 ESPERA4      :LOAD       CONT2        10           
+111  33 ESPERA3      :SUB        CONT2        01           
+112  34              :JUMP       NZ           ESPERA3      
+113  35              :SUB        CONT1        01           
+114  36              :JUMP       NZ           ESPERA4      
+115  37              :RETURN     
+116  38              
+117  38              
+118  38              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+119  38              ; RUTINA HASHEA (Recibe, Eco, Hash)
+120  38              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+121  38 HASHEA       
+122  38              :CALL       RECIBE       
+123  39              :LOAD       TXREG        RXREG        
+124  3A              :CALL       TRANSMITE    
+125  3B              :HASHER     RXREG        
+126  3C              :RETURN     
+127  3D              
+128  3D SALTOLINEA   
+129  3D              :LOAD       TXREG        0D           ; CR
+130  3E              :CALL       TRANSMITE    
+131  3F              :LOAD       TXREG        0A           ; LF
+132  40              :CALL       TRANSMITE    
+133  41              :RETURN     
+134  42              
+135  42              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+136  42              ; MENSAJES (Mal / Bien)
+137  42              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+138  42 RUTINAMAL    
+139  42              
+140  42              
+141  42              :CALL       SALTOLINEA   
+142  43              :LOAD       TXREG        4D           ; 'm'
+143  44              :CALL       TRANSMITE    
+144  45              :LOAD       TXREG        41           ; 'a'
+145  46              :CALL       TRANSMITE    
+146  47              :LOAD       TXREG        4C           ; 'l'
+147  48              :CALL       TRANSMITE    
+148  49              :CALL       SALTOLINEA   
+149  4A              :CALL       TRANSMITE    
+150  4B              
+151  4B              :JUMP       FIN          
+152  4C              
+153  4C RUTINABIEN   
+154  4C              :CALL       SALTOLINEA   
+155  4D              
+156  4D              ; --- CAMBIO PRO: MELODIA VICTORIA (3 Beeps) ---
+157  4D              :LOAD       TXREG        07           ; Beep 1
+158  4E              :CALL       TRANSMITE    
+159  4F              
+160  4F              ; ----------------------------------------------
+161  4F              
+162  4F              :LOAD       TXREG        20           ; space
+163  50              :CALL       TRANSMITE    
+164  51              :LOAD       TXREG        46           ; F
+165  52              :CALL       TRANSMITE    
+166  53              :LOAD       TXREG        45           ; E
+167  54              :CALL       TRANSMITE    
+168  55              :LOAD       TXREG        4C           ; L
+169  56              :CALL       TRANSMITE    
+170  57              :LOAD       TXREG        49           ; I
+171  58              :CALL       TRANSMITE    
+172  59              :LOAD       TXREG        43           ; C
+173  5A              :CALL       TRANSMITE    
+174  5B              :LOAD       TXREG        49           ; I
+175  5C              :CALL       TRANSMITE    
+176  5D              :LOAD       TXREG        44           ; D
+177  5E              :CALL       TRANSMITE    
+178  5F              :LOAD       TXREG        41           ; A
+179  60              :CALL       TRANSMITE    
+180  61              :LOAD       TXREG        44           ; D
+181  62              :CALL       TRANSMITE    
+182  63              :LOAD       TXREG        45           ; E
+183  64              :CALL       TRANSMITE    
+184  65              :LOAD       TXREG        53           ; S
+185  66              :CALL       TRANSMITE    
+186  67              :LOAD       TXREG        21           ; !
+187  68              :CALL       TRANSMITE    
+188  69              :LOAD       TXREG        21           ; !
+189  6A              :CALL       TRANSMITE    
+190  6B              :CALL       SALTOLINEA   
+191  6C              :CALL       TRANSMITE    
+192  6D              :JUMP       FIN          
+193  6E FIN          
+194  6E              ; (Opcional) Imprimir el código de error si quieres debug
+195  6E              ; LOAD    txreg, rxreg
+196  6E              ; CALL    transmite
+197  6E              :RETURN     
+198  6F              
+199  6F              
+200  6F              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+201  6F              ; RUTINA DE ATENCION A LA INTERRUPCION
+202  6F              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+203  6F INTERRUP     
+204  6F              :DISABLE    INTERRUPT    
+205  70              
+206  70              :INPUT      S0           FSM_PORT     
+207  71              :AND        S0           80           
+208  72              :JUMP       NZ           SALIR_INTERRUP 
+209  73              
+210  73              ; Recibimos y hasheamos los 4 caracteres
+211  73              :CALL       HASHEA       
+212  74              :OUTPUT     RXREG        FE           
+213  75              
+214  75              :CALL       HASHEA       
+215  76              :OUTPUT     RXREG        FD           
+216  77              
+217  77              :CALL       HASHEA       
+218  78              :OUTPUT     RXREG        FC           
+219  79              
+220  79              :CALL       HASHEA       
+221  7A              :OUTPUT     RXREG        FB           
+222  7B              
+223  7B              :CALL       WAIT_05BIT   
+224  7C              
+225  7C              ; --- LEER RESULTADO DEL XOR ---
+226  7C              :INPUT      RXREG        FA           ; Leemos resultado (00 o FF)
+227  7D              
+228  7D              ; --- NUEVO: AVISAR AL HARDWARE ---
+229  7D              ; Esto es vital: le decimos a la FSM si hemos acertado o fallado
+230  7D              :OUTPUT     RXREG        FSM_PORT     
+231  7E              
+232  7E              ; Tambien lo mandamos al VGA (codigo original)
+233  7E              :OUTPUT     RXREG        EF           
+234  7F              
+235  7F              ; Comprobamos resultado para el usuario
+236  7F              :OR         RXREG        00           
+237  80              :CALL       Z            RUTINABIEN   
+238  81              :CALL       NZ           RUTINAMAL    
+239  82              
+240  82              ; Volvemos al start para comprobar si el hardware nos ha bloqueado
+241  82              :RETURNI    ENABLE       
+242  83              
+243  83 SALIR_INTERRUP 
+244  83              :DISABLE    INTERRUPT    
+245  84              :INPUT      S0           FSM_PORT     
+246  85              :AND        S0           80           
+247  86              :JUMP       NZ           SALIR_INTERRUP 
+248  87              :RETURNI    ENABLE       
+249  88              
+250  FF              :ADDRESS    FF           
+251  FF              :JUMP       INTERRUP     

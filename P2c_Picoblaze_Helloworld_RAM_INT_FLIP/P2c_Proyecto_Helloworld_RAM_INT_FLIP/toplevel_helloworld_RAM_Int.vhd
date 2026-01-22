@@ -131,7 +131,7 @@ signal outresult : std_logic_vector(7 downto 0);
 -----------------------------------------------------------------
 -- Signals para salida ESTADOS 
 -----------------------------------------------------------------
-signal mis_estados : std_logic;
+signal mis_estados : std_logic_vector(7 downto 0);
 
 type ram_type is array (0 to 63) of std_logic_vector (7 downto 0);
 signal RAM : ram_type := (
@@ -147,11 +147,12 @@ signal RAM : ram_type := (
 signal rxbuff_out,RAM_out: std_logic_vector(7 downto 0);
 
 begin
-    -- Conectamos la se�al de bloqueo al LED 7 (F9)
-    LED(7) <= mis_estados(7);
-    -- Apagamos del 0 al 6 para que no molesten ni den error
-    LED(6 downto 0) <= (others => '0');
-
+	LED(7) <= reset;
+   -- Conectamos la se�al de bloqueo al LED 7 (F9)
+   LED(6) <= mis_estados(7);
+   -- Apagamos del 0 al 6 para que no molesten ni den error
+   LED(5 downto 0) <= (others => '0');
+	 
 	read_strobe <= readstrobe;
 	write_strobe <= writestrobe;
 	port_id <= portid;
@@ -210,9 +211,9 @@ begin
     port map (
 				clk             => clk,
 				reset           => reset,
-				pb_write_strobe => writestrobe, 
-				pb_port_id      => portid,
-				pb_out_port     => outport,
+				write_strobe => writestrobe, 
+				port_id      => portid,
+				out_port     => outport,
 				out_result   => mis_estados  );
    		
 	--registra el bit tx del puerto de salida, por si �ste cambia

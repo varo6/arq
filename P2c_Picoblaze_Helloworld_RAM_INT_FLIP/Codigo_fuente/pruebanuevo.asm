@@ -7,15 +7,8 @@
 ;declaracion de constantes y variables
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                  
 CONSTANT    rs232, FF       ; Puerto serie
-CONSTANT    fsm_port, DD    ; NUEVO: Puerto para hablar con la FSM (Hardware)
+CONSTANT    fsm_port, DD    ; Puerto para hablar con la FSM
 CONSTANT    vga_port, EF    ; Puerto para VGA (opcional)
-
-; Puertos de caracteres para el XOR
-CONSTANT    char1, FE
-CONSTANT    char2, FD
-CONSTANT    char3, FC
-CONSTANT    char4, FB
-CONSTANT    xor_res, FA     ; Resultado del XOR
 
 NAMEREG     s1, txreg       
 NAMEREG     s2, rxreg       
@@ -34,7 +27,7 @@ start:
     ; --- NUEVO: CHEQUEO DE BLOQUEO (LED) ---
     ; Antes de imprimir nada, miramos si el hardware nos tiene castigados
     INPUT   s0, fsm_port
-    AND     s0, 01          ; Miramos el bit 0 (s_locked)
+    AND     s0, 80 
     JUMP    NZ, start       ; Si es 1 (LED encendido), volvemos a empezar (espera)
 
     ; --- SI LLEGAMOS AQUI, EL SISTEMA ESTA LIBRE ---
@@ -55,7 +48,7 @@ parte2:
 bucle_espera:     
     ; Comprobamos constantemente si el hardware nos bloquea de repente
     INPUT   s0, fsm_port
-    AND     s0, 01
+    AND     s0, 80 
     JUMP    NZ, start       ; Si nos bloquean, saltamos al inicio (desactiva int)
     
     JUMP    bucle_espera    ; Si no, seguimos esperando
@@ -143,27 +136,60 @@ saltolinea:
 ; MENSAJES (Mal / Bien)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 rutinamal:
+  
+    
     CALL    saltolinea
-    LOAD    txreg,6D        ; 'm'
+    LOAD    txreg,4D        ; 'm'
     CALL    transmite
-    LOAD    txreg,61        ; 'a'
+    LOAD    txreg,41        ; 'a'
     CALL    transmite
-    LOAD    txreg,6C        ; 'l'
+    LOAD    txreg,4C        ; 'l'
     CALL    transmite
+    CALL    saltolinea
+    CALL    transmite
+
     JUMP    fin
 
 rutinabien:
     CALL    saltolinea
-    LOAD    txreg,62        ; 'b'
+
+    ; --- CAMBIO PRO: MELODIA VICTORIA (3 Beeps) ---
+   LOAD    txreg, 07       ; Beep 1
     CALL    transmite
-    LOAD    txreg,69        ; 'i'
+  
+    ; ----------------------------------------------
+
+    LOAD    txreg, 20   ; space
     CALL    transmite
-    LOAD    txreg,65        ; 'e'
+    LOAD    txreg, 46   ; F
     CALL    transmite
-    LOAD    txreg,6E        ; 'n'
+    LOAD    txreg, 45   ; E
+    CALL    transmite
+    LOAD    txreg, 4C   ; L
+    CALL    transmite
+    LOAD    txreg, 49   ; I
+    CALL    transmite
+    LOAD    txreg, 43   ; C
+    CALL    transmite
+    LOAD    txreg, 49   ; I
+    CALL    transmite
+    LOAD    txreg, 44   ; D
+    CALL    transmite
+    LOAD    txreg, 41   ; A
+    CALL    transmite
+    LOAD    txreg, 44   ; D
+    CALL    transmite
+    LOAD    txreg, 45   ; E
+    CALL    transmite
+    LOAD    txreg, 53   ; S
+    CALL    transmite
+    LOAD    txreg, 21   ; !
+    CALL    transmite
+    LOAD    txreg, 21   ; !
+    CALL    transmite
+    CALL    saltolinea
     CALL    transmite
     JUMP    fin 
-
 fin:
     ; (Opcional) Imprimir el código de error si quieres debug
     ; LOAD    txreg, rxreg
@@ -176,6 +202,10 @@ fin:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 interrup:   
     DISABLE INTERRUPT
+
+    INPUT   s0, fsm_port
+    AND     s0, 80 
+    JUMP    NZ, salir_interrup    
 
     ; Recibimos y hasheamos los 4 caracteres
     CALL        hashea 
@@ -204,10 +234,17 @@ interrup:
                       
     ; Comprobamos resultado para el usuario
     OR    		 rxreg, 00           
-    CALL        Z, rutinabien       ; Si es 0 -> Bien
-    CALL        NZ, rutinamal       ; Si no es 0 -> Mal (use CALL NZ para seguridad)
+    CALL        Z, rutinabien       
+    CALL        NZ, rutinamal       
 
     ; Volvemos al start para comprobar si el hardware nos ha bloqueado
+    RETURNI     ENABLE
+
+salir_interrup:
+    DISABLE INTERRUPT
+    INPUT   s0, fsm_port
+    AND     s0, 80 
+    JUMP    NZ, salir_interrup
     RETURNI     ENABLE
     
     ADDRESS     FF

@@ -1,0 +1,196 @@
+V3 97
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/arithmatic.vhd 2026/01/22.17:12:58 P.20131013
+EN work/arithmetic_process 1769104856 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/arithmatic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/arithmetic_process/low_level_definition 1769104857 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/arithmatic.vhd \
+      EN work/arithmetic_process 1769104856 CP addsub8
+EN work/addsub8 1769104858 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/arithmatic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/addsub8/low_level_definition 1769104859 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/arithmatic.vhd \
+      EN work/addsub8 1769104858
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/carry_flag_logic.vhd 2026/01/22.17:12:58 P.20131013
+EN work/carry_flag_logic 1769104870 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/carry_flag_logic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/carry_flag_logic/low_level_definition 1769104871 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/carry_flag_logic.vhd \
+      EN work/carry_flag_logic 1769104870
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/hasher.vhd 2026/01/22.17:12:59 P.20131013
+EN work/hasher 1769104862 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/hasher.vhd \
+      PB ieee/std_logic_1164 1381692176
+AR work/hasher/low_level_definition 1769104863 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/hasher.vhd \
+      EN work/hasher 1769104862
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_capture.vhd 2026/01/22.17:12:59 P.20131013
+EN work/interrupt_capture 1769104886 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_capture.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/interrupt_capture/low_level_definition 1769104887 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_capture.vhd \
+      EN work/interrupt_capture 1769104886
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_logic.vhd 2026/01/22.17:12:59 P.20131013
+EN work/interrupt_logic 1769104888 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_logic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/interrupt_logic/low_level_definition 1769104889 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/interrupt_logic.vhd \
+      EN work/interrupt_logic 1769104888
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/IO_strobe_logic.vhd 2026/01/22.17:12:58 P.20131013
+EN work/IO_strobe_logic 1769104854 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/IO_strobe_logic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179 LB unisim PH unisim/VCOMPONENTS 1381692182
+AR work/IO_strobe_logic/low_level_definition 1769104855 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/IO_strobe_logic.vhd \
+      EN work/IO_strobe_logic 1769104854
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/logical_bus_processing.vhd 2026/01/22.17:12:59 P.20131013
+EN work/logical_bus_processing 1769104864 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/logical_bus_processing.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/logical_bus_processing/low_level_definition 1769104865 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/logical_bus_processing.vhd \
+      EN work/logical_bus_processing 1769104864
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_estados.vhd 2026/01/22.18:57:45 P.20131013
+EN work/estados 1769104898 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_estados.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181
+AR work/estados/Behavioral 1769104899 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_estados.vhd \
+      EN work/estados 1769104898
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.vhd 2026/01/22.17:12:59 P.20131013
+EN work/modulo_xor 1769104894 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181
+AR work/modulo_xor/Behavioral 1769104895 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/modulo_xor.vhd \
+      EN work/modulo_xor 1769104894
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/picoblaze.vhd 2026/01/22.17:12:59 P.20131013
+EN work/picoblaze 1769104890 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/picoblaze.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/picoblaze/Behavioral 1769104891 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/picoblaze.vhd \
+      EN work/picoblaze 1769104890 CP IO_strobe_logic CP arithmetic_process \
+      CP shift_rotate CP hasher CP logical_bus_processing CP T_state_and_Reset \
+      CP register_and_flag_enable CP carry_flag_logic CP zero_flag_logic \
+      CP program_counter CP register_bank CP stack_ram CP stack_counter \
+      CP interrupt_capture CP interrupt_logic
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/program_counter.vhd 2026/01/22.17:12:59 P.20131013
+EN work/program_counter 1769104874 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/program_counter.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/program_counter/low_level_definition 1769104875 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/program_counter.vhd \
+      EN work/program_counter 1769104874
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/pruebanuevo.vhd 2026/01/22.19:00:23 P.20131013
+EN work/pruebanuevo 1769104892 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/pruebanuevo.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/pruebanuevo/v1 1769104893 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/pruebanuevo.vhd \
+      EN work/pruebanuevo 1769104892
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_and_flag_enable.vhd 2026/01/22.17:12:59 P.20131013
+EN work/register_and_flag_enable 1769104868 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_and_flag_enable.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/register_and_flag_enable/low_level_definition 1769104869 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_and_flag_enable.vhd \
+      EN work/register_and_flag_enable 1769104868
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_bank.vhd 2026/01/22.17:12:59 P.20131013
+EN work/register_bank 1769104876 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_bank.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/register_bank/Behavioral 1769104877 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_bank.vhd \
+      EN work/register_bank 1769104876 CP ram_Nx1
+EN work/ram_Nx1 1769104878 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_bank.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/ram_Nx1/Behavioral 1769104879 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/register_bank.vhd \
+      EN work/ram_Nx1 1769104878
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/shift_rotate.vhd 2026/01/22.17:12:59 P.20131013
+EN work/shift_rotate 1769104860 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/shift_rotate.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/shift_rotate/low_level_definition 1769104861 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/shift_rotate.vhd \
+      EN work/shift_rotate 1769104860
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_counter.vhd 2026/01/22.17:12:59 P.20131013
+EN work/stack_counter 1769104884 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_counter.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/stack_counter/low_level_definition 1769104885 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_counter.vhd \
+      EN work/stack_counter 1769104884
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_ram.vhd 2026/01/22.17:12:59 P.20131013
+EN work/stack_ram 1769104880 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_ram.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/stack_ram/low_level_definition 1769104881 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_ram.vhd \
+      EN work/stack_ram 1769104880 CP ram_x1s
+EN work/ram_x1s 1769104882 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_ram.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/ram_x1s/Behavioral 1769104883 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/stack_ram.vhd \
+      EN work/ram_x1s 1769104882
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/toplevel_helloworld_RAM_Int.vhd 2026/01/22.17:27:23 P.20131013
+EN work/toplevel 1769104900 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/toplevel_helloworld_RAM_Int.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181
+AR work/toplevel/behavioral 1769104901 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/toplevel_helloworld_RAM_Int.vhd \
+      EN work/toplevel 1769104900 CP picoblaze CP pruebanuevo CP modulo_xor \
+      CP vga_inter CP estados
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/T_state_and_Reset.vhd 2026/01/22.17:12:58 P.20131013
+EN work/T_state_and_Reset 1769104866 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/T_state_and_Reset.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/T_state_and_Reset/low_level_definition 1769104867 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/T_state_and_Reset.vhd \
+      EN work/T_state_and_Reset 1769104866
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga.vhd 2026/01/22.17:12:59 P.20131013
+EN work/vga 1769104852 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181
+AR work/vga/Behavioral 1769104853 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga.vhd \
+      EN work/vga 1769104852
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga_inter.vhd 2026/01/22.17:13:00 P.20131013
+EN work/vga_inter 1769104896 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga_inter.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/NUMERIC_STD 1381692181
+AR work/vga_inter/Behavioral 1769104897 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/vga_inter.vhd \
+      EN work/vga_inter 1769104896 CP vga
+FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/zero_flag_logic.vhd 2026/01/22.17:13:00 P.20131013
+EN work/zero_flag_logic 1769104872 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/zero_flag_logic.vhd \
+      PB ieee/std_logic_1164 1381692176 PB ieee/std_logic_arith 1381692177 \
+      PB ieee/STD_LOGIC_UNSIGNED 1381692179
+AR work/zero_flag_logic/low_level_definition 1769104873 \
+      FL C:/Users/DETCP/Downloads/arq-main/arq-main/P2c_Picoblaze_Helloworld_RAM_INT_FLIP/P2c_Proyecto_Helloworld_RAM_INT_FLIP/zero_flag_logic.vhd \
+      EN work/zero_flag_logic 1769104872
