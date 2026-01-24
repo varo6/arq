@@ -3,7 +3,7 @@
 %%%%%%%%%%%%
 % Packages %
 %%%%%%%%%%%%
-\usepackage[english]{babel}
+\usepackage[spanish]{babel}
 \usepackage{packages/sleek}
 \usepackage{packages/sleek-title}
 \usepackage{packages/sleek-theorems}
@@ -18,13 +18,13 @@
 \usepackage{geometry}
 \usepackage{ragged2e}
 \lstset{
-    basicstyle=\ttfamily\small, 
-    frame=single,              
-    numbers=left,              
-    numberstyle=\tiny,         
-    keywordstyle=\bfseries,    
-    breaklines=true,           
-    captionpos=b,              
+    basicstyle=\ttfamily\small,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    keywordstyle=\bfseries,
+    breaklines=true,
+    captionpos=b,
 }
 \graphicspath{ {./resources/img/} }
 %%%%%%%%%%%%%%
@@ -34,12 +34,9 @@
 \logo{./resources/pdf/logo.pdf}
 \institute{Universidad Politécnica de Cartagena}
 \faculty{Arquitectura de Hardware}
-%\department{Department of Anything but Psychology}
-\title{MULTIPLICADOR SECUENCIAL}
-\subtitle{Práctica 1}
-\author{\textit{Autores}\\Carmen Segura Martinez \\ André Yermak Naumenko}
-%\supervisor{Linus \textsc{Torvalds}}
-%\context{A long time ago in a galaxy far, far away...}
+\title{Práctica 2: Picoblaze}
+\subtitle{Sistema de Bloqueo con contraseña hasheada}
+\author{\textit{Autores}\\ Carmen Segura Martinez \\ André Yermak Naumenko \\ Álvaro Hernández Riquelme }
 \date{\today}
 
 %%%%%%%%%%%%%%%%
@@ -54,310 +51,295 @@
 
 \def\tbs{\textbackslash}
 
-%%%%%%%%%%%%
-% Document %
-%%%%%%%%%%%%
-
-% \begin{figure}[H]
-% 	\centering
-% 	\includegraphics[scale=0.5]{maquetainicial.png}
-% 	\caption{Fig. Red Core MPLS (AS65100).}
-% 	\label{fig:maquetainicial}
-% \end{figure}
-
-% \begin{lstlisting}[language=bash, caption={Configuración OSPF en el Router PE1}]
-%     interface Loopback0
-%      ip address 2.2.2.2 255.255.255.255
-%      no shutdown
-%      exit
-    
-%     router ospf 1
-%      router-id 2.2.2.2
-%      network 100.1.0.0 0.0.0.3 area 0
-%      network 2.2.2.2 0.0.0.0 area 0
-%      exit
-% \end{lstlisting}
 
 \begin{document}
 \maketitle
 \romantableofcontents
 \setcounter{section}{0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introducción}
-  El objetivo de esta práctica es actualizar y reestructurar la implementación del multiplicador secuencial estudiado en clase, desarrollando una versión alternativa del diseño original. Esta nueva versión busca modificar la forma en que se gestionan las señales de entrada y control, adaptando la arquitectura del sistema sin alterar su funcionamiento básico. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  En la Figura~\ref{fig:estructuras_multiplicador} se muestran, de forma comparativa, la estructura inicial del multiplicador secuencial y la modificación propuesta. A continuación, se indican los cambios que deben incorporarse en el nuevo diseño:
+Este reporte documenta el desarrollo de un sistema de seguridad basado implementado en el microprocesador PicoBlaze. El objetivo principal es implementar un mecanismo de autenticación que solicita al usuario una contraseña de 4 caracteres, la procesa mediante una función de hash implementada en hardware, y verifica si coincide con una clave predefinida. Estará controlado por una maquina de estados y conectado a un monitor VGA. Finalmente, se añade una extensión por software donde se puede enviar esa contraseña a probar remotamente, desde internet.
 
-  \begin{itemize}
-    \item Sustituir el bus de entrada \texttt{inbus} de 8 bits por dos buses: \texttt{inbusQ} de 18 bits y \texttt{inbusM} de 24 bits, con posibilidad de introducir simultáneamente los datos del Multiplicando y del Multiplicador.
-    \item Eliminar de la entidad los puertos de entrada \texttt{weQ} y \texttt{weM} y generar las señales de control equivalentes mediante la FSM.
-    \item Impedir que el resultado parcial del multiplicador aparezca a la salida hasta no obtener el resultado final.
-    \item Modificar el testbench de simulación y comprobar el correcto funcionamiento del nuevo diseño.
-    \item Redactar un informe de la práctica que incluya: portada (Título de la Práctica, Nº de práctica, autores, etc.), documento con los ficheros VHDL modificados y una breve explicación de las modificaciones realizadas y de los principales resultados de simulación.
-  \end{itemize}
+El sistema integra varios componentes:
+\begin{itemize}
+    \item Una modificación de la arquitectura del PicoBlaze para incluir una instrucción personalizada de hash.
+    \item Periféricos hardware para la comparación de contraseñas, visualización VGA y gestión de estados.
+    \item Un programa en ensamblador que coordina toda la lógica con los registror pasado por un parser a la memoria ROM del picoblaze en VHDL.
+\end{itemize}
 
-  El desarrollo de esta práctica implica adaptar la estructura del multiplicador secuencial para incorporar las nuevas interfaces de entrada y modificar la lógica de control, reemplazando las señales de escritura externas por un control interno gestionado por la FSM. Asimismo, se deberá revisar la secuencia de estados y asegurar que el flujo de datos entre registros sea coherente con las nuevas condiciones de entrada y salida.  
+El funcionamiento general es el siguiente: el sistema muestra un mensaje de bienvenida, el cual está incluido en la ram. Espera la introducción de 4 caracteres por parte del usuario, los procesa con la función hash, compara el resultado con la contraseña almacenada (``HOLA'' hasheada, aunque podría ser cualquiera que se decida previamente a volcar el programa en la placa), y muestra el resultado tanto por el puerto serie como por la salida VGA. En caso de error, el usuario dispone de 3 intentos antes de que el sistema entre en un estado de bloqueo temporal de 5 segundos. Todo esto controlado por la máquina de estados.
 
-  Finalmente, será necesario realizar una simulación completa que permita validar el funcionamiento correcto del diseño, verificando que el resultado final se presenta únicamente al completarse el proceso de multiplicación y que no se generan valores intermedios en la salida.  
+El direccionamiento de los puertos elegidos será el siguiente:
 
-  El informe final deberá reflejar la estructura y comportamiento de esta nueva versión, describiendo la implementación realizada, así como las diferencias entre la arquitectura original (Figura~\ref{fig:estructuras_multiplicador}a) y la versión modificada (Figura~\ref{fig:estructuras_multiplicador}b).
 
-  \begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{img21.jpg}
-      \caption{Estructura de partida del multiplicador secuencial.}
-      \label{fig:estructura_partida}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{img22.png}
-      \caption{Modificación propuesta a la estructura del multiplicador secuencial.}
-      \label{fig:estructura_modificada}
-    \end{subfigure}
-    \caption{Comparación entre la estructura original (a) y la versión modificada (b) del multiplicador secuencial.}
-    \label{fig:estructuras_multiplicador}
-  \end{figure}
 
-\chapter{Edición del Código VHDL}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Modificación de Arquitectura}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \section{1. Sustitución del bus de entrada}
-    En primer lugar, declaramos la nueva estructura de la entidad con la nueva longitud de bits correspondientes (véase Código~\ref{code:entidad}):
+\section{Hasher}
 
-    \begin{lstlisting}[language=vhdl, caption={Definición de la entidad con los nuevos buses de entrada.}, label={code:entidad}]
-      entity mult_sec is
-        Port ( inbus_Q  : in std_logic_vector(17 downto 0);
-              inbus_M  : in std_logic_vector(23 downto 0);
-              outbus   : out std_logic_vector(41 downto 0);
-              I        : in std_logic;
-              rst      : in std_logic;
-              clk      : in std_logic);
-      end mult_sec;
-    \end{lstlisting}
+Para implementar la función de hash se ha añadido una nueva instrucción al repertorio del PicoBlaze denominada \texttt{HASHER}. Esta instrucción recibe los mismos parámetros del flip, ya que toma un operando de 8 bits y produce un resultado de 8 bits mediante una serie de transformaciones combinacionales, pero no es lineal, la finalidad es de ofuscar al máximo posible la contraseña de forma que el picoblaze pueda actuar como una especie de \textit{caja negra}, donde no se pueda extraer la contraseña ni interpretar las operaciones de ninguna forma.
 
-    Y lo mismo para nuestras señales internas (Código~\ref{code:arquitectura}):
 
-    \begin{lstlisting}[language=vhdl, caption={Declaración de señales internas de la arquitectura.}, label={code:arquitectura}]
-      architecture Behavioral of mult_sec is
+\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=0.9\textwidth]{resources/img/hasher.png}
+ 	\caption{Diagrama del módulo Hasher.}
+ 	\label{fig:hasher}
+ \end{figure}
 
-        type type_state is (INICIO, SUMACU, DESDEC);
-        signal state, nextstate: type_state;
-        
-        signal CA, pp: std_logic_vector(24 downto 0);
-        signal Q: std_logic_vector(17 downto 0);
-        signal M: std_logic_vector(23 downto 0);
-        signal init, ld, sh: std_logic;
-        signal cnt: unsigned (4 downto 0);
-        signal Z: std_logic;
-        signal enable_outbus: std_logic;
 
-      begin
-    \end{lstlisting}
+Como se muestra en la figura anterior, la arquitectura del módulo hasher se compone de 5 etapas en cascada:
 
-    \newpage
-    A continuación, se actualiza el tamaño del registro \texttt{CA} en el proceso de iniciación (Código~\ref{code:registro_CA}):
+\texttt{stage1\_flip:} La primera transformación invierte el orden de los bits del operando de entrada. Lo que tendríamos antes como flip. El bit 0 pasa a ser el bit 7, el bit 1 pasa a ser el bit 6, y así sucesivamente.
 
-    \begin{lstlisting}[language=vhdl, caption={Proceso del registro C y A con nuevo tamaño.}, label={code:registro_CA}]
-      -- Registro C y A:
-      process(rst, clk)
-      begin
-        if (rst='1') then
-          CA <= (others=>'0');
-        elsif rising_edge(clk) then
-          if (init='1') then
-            CA <= (others=>'0');
-          elsif (ld='1') then
-            CA <= pp;
-          elsif (sh='1') then
-            CA <= '0' & CA(24 downto 1);
-          end if;
-        end if;
-      end process;
-    \end{lstlisting}
+\begin{lstlisting}[language=VHDL, caption={Etapa FLIP}]
+flip_gen: for i in 0 to 7 generate
+    stage1_flip(i) <= operand(7-i);
+end generate;
+\end{lstlisting}
 
-    De la misma forma, se ajustan los registros \texttt{Q} y \texttt{M} para que se adapten al nuevo tamaño de los buses de entrada (Código~\ref{code:registro_QM}):
+\texttt{stage2\_xor:} El resultado de la etapa anterior se combina mediante una operación XOR con una constante denominada \texttt{MAGIC\_KEY} cuyo valor es \texttt{0xA5} (10100101 en binario). La clave mágina es lo que normalmente se conoce como clave privada, aunque en este caso está pensado para dejarlo en el código sin cambiar, de forma que desde fuera no se podría revelar.
 
-    \begin{lstlisting}[language=vhdl, caption={Procesos de los registros Q y M.}, label={code:registro_QM}]
-      -- Registro Q:
-      process(rst, clk)
-      begin
-        if (rst='1') then
-          Q <= (others=>'0');
-        elsif rising_edge(clk) then
-          if (init='1') then
-            Q <= inbus_Q(17 downto 0);
-          elsif (sh='1') then
-            Q <= CA(0) & Q(17 downto 1);
-          end if;
-        end if;
-      end process;
+\begin{lstlisting}[language=VHDL, caption={Etapa XOR}]
+constant MAGIC_KEY : std_logic_vector(7 downto 0) := x"A5";
+stage2_xor <= stage1_flip xor MAGIC_KEY;
+\end{lstlisting}
 
-      -- Registro M:
-      process(rst, clk)
-      begin
-        if (rst='1') then
-          M <= (others=>'0');
-        elsif rising_edge(clk) then
-          if (init='1') then
-            M <= inbus_M(23 downto 0);
-          end if;
-        end if;
-      end process;
-    \end{lstlisting}
+\texttt{stage3\_rot:} Se realiza una rotación hacia la izquierda de 3 posiciones. Los 3 bits más significativos pasan a ocupar las posiciones menos significativas.
 
-  \section{2. Eliminación de \texttt{weQ} y \texttt{weM}}
-    En este apartado, se eliminan las señales de control \texttt{weQ} y \texttt{weM} de la entidad y se utiliza una única señal de control \texttt{init} para gestionar la carga de los registros \texttt{Q} y \texttt{M}.  
-    Su implementación ya puede observarse en el código anterior (véase el Código~\ref{code:registro_QM}).
+\begin{lstlisting}[language=VHDL, caption={Etapa ROT}]
+stage3_rot <= stage2_xor(4 downto 0) & stage2_xor(7 downto 5);
+\end{lstlisting}
 
-    Por otro lado, la señal \texttt{init} se genera y se gestiona en la FSM, como se muestra a continuación:
-    \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:fsm_init}]
-      process(state, I, Q(0), Z)
-        begin
-          init <= '0'; ld <= '0'; sh <= '0'; enable_outbus <= '0';
-          nextstate <= state;
-          case state is
-            when INICIO =>
-              enable_outbus <= '1';
-              if (I='1') then
-                init <= '1';
-                nextstate <= SUMACU;
-              else
-                init <= '0';
-                nextstate <= INICIO;
-              end if;
-            when SUMACU =>
-              enable_outbus <= '0';
-              if (Q(0)='1') then
-                ld <= '1';
-              else
-                ld <= '0';
-              end if;	
-              nextstate <= DESDEC;
-            when DESDEC =>
-              if (Z='1') then
-                nextstate <= INICIO;
-              else
-                nextstate <= SUMACU; 
-              end if;
-              sh <= '1';
-            when others =>
-                  nextstate <= INICIO;
-          end case;
-        end process;
-    \end{lstlisting}
-    
-    Con esta implementación, ya no es necesario de usar dos ciclos de reloj para cargar los registros \texttt{Q} y \texttt{M}, sino que ambos se cargan simultáneamente en un único ciclo cuando la señal \texttt{init} se activa.
-  \section{3. Control de la salida del resultado}
+\texttt{stage4\_swap:} Se intercambian los nibbles (grupos de 4 bits) del byte. El nibble alto pasa a ser el bajo y viceversa.
 
-    La forma en la que se ha controlado la salida del resultado es mediante la señal \texttt{enable\_outbus}, 
-    que se activa únicamente en el estado \texttt{INICIO} de la FSM (véase Código~\ref{code:fsm_init}).
-    Una forma sencilla que, llegado al estado \texttt{INICIO}, significa que la operación ha finalizado, por lo tanto no requiere nada más que una verificación al cargar outbus:
-    
-    \begin{lstlisting}[language=vhdl, caption={Carga del bus de salida.}, label={code:outbus}]
-      --Salida:
-	    outbus <= (CA(23 downto 0) & Q) when (enable_outbus= '1') else (others => '0');
-    \end{lstlisting}
-\chapter{Simulación TestBench}
-  Una vez realizado el rediseño del multiplicador secuencial, se procede a actualizar también el \texttt{testbench} para adaptarlo a las nuevas características y restricciones del sistema.
-  La declaración del compoente y sus puertos, las señales internas y la instancia del DUT se muestran en el Código~\ref{code:testbench}.
+\begin{lstlisting}[language=VHDL, caption={Etapa NIBBLE SWAP}]
+stage4_swap <= stage3_rot(3 downto 0) & stage3_rot(7 downto 4);
+\end{lstlisting}
 
-  Tras la declaración, asignamos valores a las señales para verificar si el diseño funciona correctamente.
-  En primer lugar, se genera un producto de 13*200 (resultado = 2600) y luego otro arbitrario de 123.277*9.381.064 (resultado = 1.156.469.426.728) mostrado en el código~\ref{code:simulacion}.
-  
-  Podemos verificar el correcto funcionamiento del diseño observando las señales en la simulación (Figura~\ref{fig:simulacion}).
+\texttt{stage5\_mix: }La etapa final aplica una mezcla no lineal utilizando rotaciones adicionales y operaciones lógicas:
 
-  \newpage
-  \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:testbench}]
-    ARCHITECTURE behavior OF testbench_mult_sec IS 
+\begin{lstlisting}[language=VHDL, caption={Etapa MIX}]
+r1 <= stage4_swap(6 downto 0) & stage4_swap(7);          -- rotl1
+r2 <= stage4_swap(5 downto 0) & stage4_swap(7 downto 6); -- rotl2
+stage5_mix <= stage4_swap xor r1 xor (stage4_swap and r2);
+\end{lstlisting}
 
-      COMPONENT mult_sec
-      PORT(
-        inbus_Q  : IN std_logic_vector(17 downto 0);
-        inbus_M  : IN std_logic_vector(23 downto 0);
-        I        : IN std_logic;
-        rst      : IN std_logic;
-        clk      : IN std_logic;          
-        outbus   : OUT std_logic_vector(41 downto 0)
-      );
-      END COMPONENT;
-      
-      SIGNAL inbus_Q :  std_logic_vector(17 downto 0) := (others=>'0');
-      SIGNAL inbus_M :  std_logic_vector(23 downto 0) := (others=>'0');
-      SIGNAL outbus  :  std_logic_vector(41 downto 0);
-      SIGNAL I       :  std_logic := '0';
-      SIGNAL rst     :  std_logic := '1';
-      SIGNAL clk     :  std_logic := '0';
+Esta etapa combina el resultado anterior con dos versiones rotadas de sí mismo (1 y 2 posiciones respectivamente), añadiendo no linealidad mediante la operación AND.
 
-      constant periodo: time := 100 ns;
+El resultado final se registra de forma síncrona en el flanco de subida del reloj, lo que añade un ciclo de latencia pero mejora el timing del diseño.
 
-    BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Periféricos}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    	uut: mult_sec 
-      PORT MAP(
-        inbus_Q => inbus_Q,
-        inbus_M => inbus_M,
-        outbus  => outbus,
-        I       => I,
-        rst     => rst,
-        clk     => clk
-      );
-  \end{lstlisting}
+\section{Comparador Combinacional}
 
-  \newpage
-  \begin{lstlisting}[language=vhdl, caption={Generación de la señal \texttt{init} en la FSM.}, label={code:simulacion}]
-    	-- Estímulos
-      tb : PROCESS
-      BEGIN
-        rst <= '1';					
-        wait for 2*periodo;
-        rst <= '0';					
+El módulo \texttt{modulo\_xor} implementa la comparación entre la contraseña introducida por el usuario (ya hasheada) y la contraseña correcta almacenada en el sistema.
 
-        -- Carga de operandos
-        inbus_M <= "000000000000000011001000"; -- M = 200
-        inbus_Q <= "000000000000001101";       -- Q = 13
-        wait for 2*periodo;
+La idea de elegir al comparador como un periférico separado es para mantener la modularidad del diseño. De esta forma, el comparador puede ser probado y verificado de forma independiente antes de integrarlo con el resto del sistema. Además, es agnóstico respecto a la fuente de datos, el algoritmo que se use en el hasher, o si la vga está activa o no, de forma que cualquier problema de funcionamiento en otras partes no interfiere con la comparación.
 
-        I <= '1';  -- inicio de la multiplicación
-        wait for periodo;
-        I <= '0';
+\subsection{Funcionamiento}
 
-        -- Espera suficiente tiempo para completar el proceso
-        wait for 100*periodo;
-        
-        -- Carga de operandos
-        inbus_M <= "100011110010010011001000"; -- M = 9381064
-        inbus_Q <= "011110000110001101";       -- Q = 123277
-        wait for 2*periodo;
 
-        I <= '1';  -- inicio de la multiplicación
-        wait for periodo;
-        I <= '0';
+\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=0.7\textwidth]{resources/img/moduloxor.png}
+ 	\caption{Diagrama del comparador combinacional.}
+ 	\label{fig:moduloxor}
+ \end{figure}
 
-        -- Espera suficiente tiempo para completar el proceso
-        wait for 100*periodo;
-        wait; 
-      END PROCESS;
-  \end{lstlisting}
+El módulo lee 4 caracteres hasheados a través de los puertos \texttt{0xFE}, \texttt{0xFD}, \texttt{0xFC} y \texttt{0xFB}. Estos valores se almacenan en registros internos cuando el PicoBlaze realiza una escritura (señal \texttt{write\_strobe} activa).
 
-  
-  \begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{image.png}
-      \caption{Primer producto realizado}
-      \label{fig:producto_a}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{image2.png}
-      \caption{Segundo producto realizado}
-      \label{fig:producto_b}
-    \end{subfigure}
-    \caption{Simulación del testbench mostrando los dos productos realizados.}
-    \label{fig:simulacion}
-  \end{figure}
-\appendix
+La contraseña correcta corresponde a la palabra ``HOLA'' procesada por el hasher:
+
+\begin{lstlisting}[language=VHDL, caption={Contraseña hasheada almacenada}]
+saved_char_1 <= "00101011";  -- 'H' hasheado
+saved_char_2 <= "01011010";  -- 'O' hasheado
+saved_char_3 <= "01011011";  -- 'L' hasheado
+saved_char_4 <= "10110010";  -- 'A' hasheado
+\end{lstlisting}
+
+\subsection{Comparación}
+La comparación se realiza mediante operaciones XOR entre cada carácter recibido y su correspondiente valor almacenado:
+
+\begin{lstlisting}[language=VHDL, caption={Operaciones XOR de comparación}]
+out_xor_1 <= saved_char_1 XOR char_1;
+out_xor_2 <= saved_char_2 XOR char_2;
+out_xor_3 <= saved_char_3 XOR char_3;
+out_xor_4 <= saved_char_4 XOR char_4;
+\end{lstlisting}
+
+Si todos los resultados XOR son cero (es decir, todos los caracteres coinciden), el módulo devuelve \texttt{0x00} indicando éxito. En caso contrario, devuelve \texttt{0xFF} indicando fallo.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{VGA}
+
+La interfaz VGA se implementa mediante dos módulos: \texttt{vga} (controlador base) y \texttt{vga\_inter} (interfaz con el sistema).
+
+\subsection{Módulo VGA Base}
+
+El módulo \texttt{vga} genera las señales de sincronización horizontal y vertical necesarias para una resolución de 640x480 píxeles a 60 Hz.
+
+\subsubsection{Parámetros de temporización}
+\begin{itemize}
+    \item \textbf{Horizontal}: 794 píxeles totales por línea, con pulso de sincronía entre los píxeles 649 y 746.
+    \item \textbf{Vertical}: 528 líneas totales por frame, con pulso de sincronía entre las líneas 489 y 491.
+    \item \textbf{Área visible}: 640x480 píxeles (antes de los límites de inhibición).
+\end{itemize}
+
+El módulo utiliza un reloj de 25 MHz (habilitado mediante la señal \texttt{enable\_25Mhz}) para generar el timing correcto.
+
+\subsection{Módulo VGA Inter}
+
+El módulo \texttt{vga\_inter} actúa como interfaz entre el controlador VGA base y el sistema PicoBlaze. Su función principal es:
+
+\begin{enumerate}
+    \item Instanciar el módulo VGA base.
+    \item Capturar el estado actual del sistema desde el bus del PicoBlaze (puerto \texttt{0xDD}).
+    \item Generar el color de salida según el estado de la máquina de estados.
+\end{enumerate}
+
+\subsubsection{Codificación de colores}
+\begin{itemize}
+    \item \textbf{Estado de bloqueo con error} (\texttt{0x81}): Pantalla ROJA (\texttt{100}).
+    \item \textbf{Estado de bloqueo acertado} (\texttt{0x82}): Pantalla VERDE (\texttt{010}).
+    \item \textbf{Resto de estados}: Pantalla BLANCA (\texttt{111}).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Máquina de Estados}
+
+El módulo \texttt{estados} implementa una máquina de estados finita (FSM) que controla el flujo del sistema de autenticación.
+
+\subsection{Estados definidos}
+
+\begin{enumerate}
+    \item \textbf{estado\_bloqueo}: Estado inicial y de penalización. El sistema permanece bloqueado durante 5 segundos (250 millones de ciclos a 50 MHz).
+    \item \textbf{estado\_escucha}: El sistema está listo para recibir intentos de autenticación.
+    \item \textbf{estado\_error1}: Primer intento fallido. Quedan 2 intentos.
+    \item \textbf{estado\_error2}: Segundo intento fallido. Queda 1 intento.
+    \item \textbf{estado\_error3}: Tercer intento fallido. Transición automática a bloqueo.
+    \item \textbf{estado\_bien}: Autenticación exitosa. Transición automática a bloqueo.
+\end{enumerate}
+
+\subsection{Arquitectura de la FSM}
+
+La máquina de estados sigue el patrón clásico de dos procesos:
+
+\subsubsection{Proceso síncrono}
+Gestiona la actualización del estado actual y el contador del temporizador. El contador solo avanza cuando el sistema está en estado de bloqueo.
+
+\subsubsection{Proceso combinacional}
+Determina el siguiente estado basándose en:
+\begin{itemize}
+    \item El estado actual.
+    \item Las señales de comunicación del PicoBlaze (\texttt{write\_strobe}, \texttt{port\_id}).
+    \item El valor recibido (\texttt{0x00} = acierto, \texttt{0xFF} = fallo).
+    \item El valor del temporizador (para salir del bloqueo).
+\end{itemize}
+
+\subsection{Salidas}
+
+El módulo genera una salida de 8 bits (\texttt{out\_result}) que codifica el estado actual:
+\begin{itemize}
+    \item \texttt{0x81}: Estado de bloqueo (bit 7 activo indica bloqueo al software).
+    \item \texttt{0x01}: Estado de escucha.
+    \item \texttt{0x02}: Error 1.
+    \item \texttt{0x04}: Error 2.
+\end{itemize}
+
+Por lo que la estructura de la maquina de estados finita queda como:
+
+\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=0.7\textwidth]{resources/img/fsm.jpeg}
+ 	\caption{Diagrama del comparador combinacional.}
+ 	\label{fig:fsm}
+ \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Assembly}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+(POR MEJORAR)
+
+El programa en ensamblador coordina todo el sistema, gestionando la comunicación serie, la interacción con los periféricos hardware y la presentación de resultados al usuario.
+
+\section{Estructura del programa}
+
+
+
+\subsection{Bucle principal}
+El programa comienza verificando si el sistema está en estado de bloqueo consultando el puerto de la FSM. Si el bit 7 está activo, el programa espera en un bucle hasta que el bloqueo termine.
+
+Una vez libre, el programa:
+\begin{enumerate}
+    \item Imprime un mensaje de bienvenida almacenado en RAM.
+    \item Habilita las interrupciones.
+    \item Entra en un bucle de espera, verificando continuamente el estado de bloqueo.
+\end{enumerate}
+
+\subsection{Rutina de interrupción}
+
+Cuando el usuario envía un carácter por el puerto serie, se dispara la interrupción. La rutina:
+
+\begin{enumerate}
+    \item Deshabilita interrupciones para evitar reentrada.
+    \item Verifica que no estemos en bloqueo.
+    \item Recibe y hashea 4 caracteres consecutivos mediante la rutina \texttt{hashea}.
+    \item Envía cada carácter hasheado al módulo comparador (puertos \texttt{0xFE}-\texttt{0xFB}).
+    \item Lee el resultado de la comparación (puerto \texttt{0xFA}).
+    \item Comunica el resultado a la FSM (puerto \texttt{0xDD}) y a la VGA (puerto \texttt{0xEF}).
+    \item Muestra el mensaje correspondiente (``FELICIDADES'' o ``mal'').
+    \item Retorna habilitando las interrupciones.
+\end{enumerate}
+
+\subsection{Rutina hashea}
+
+Esta rutina encapsula el proceso de recibir un carácter, mostrar su eco por el puerto serie, y aplicar la instrucción \texttt{HASHER}:
+
+\begin{lstlisting}[caption={Rutina hashea}]
+hashea:
+    CALL    recibe          ; Recibe caracter
+    LOAD    txreg, rxreg    ; Copia para eco
+    CALL    transmite       ; Envia eco
+    HASHER  rxreg           ; Aplica hash
+    RETURN
+\end{lstlisting}
+
+\subsection{Comunicación serie}
+
+Las rutinas \texttt{recibe} y \texttt{transmite} implementan comunicación serie por software (bit-banging) a 9600 baudios. Utilizan temporizaciones precisas mediante las rutinas \texttt{wait\_1bit} y \texttt{wait\_05bit}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Extras}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+aqui pongo la gilipollez del picowifi con la foto o un video o yo q se
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Conclusiones}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+El desarrollo de este proyecto ha permitido explorar la integración de componentes hardware y software en un sistema embebido basado en PicoBlaze. Las principales conclusiones son:
+
+\begin{enumerate}
+
+    \item \textbf{Diseño modular}: La separación en módulos independientes (hasher, comparador, VGA, FSM) facilita el desarrollo, prueba y mantenimiento del sistema. Cada componente puede verificarse de forma aislada antes de la integración.
+
+    \item \textbf{Interacción hardware-software}: El proyecto ilustra cómo el software (programa en ensamblador, aplicaciones externas como RS-232 o el picowifi) y el hardware (periféricos VHDL) cooperan para implementar funcionalidad compleja. El PicoBlaze actúa como coordinador mientras los periféricos realizan tareas especializadas.
+
+    \item \textbf{Seguridad por diseño}: Aunque se trata de un sistema didáctico, incorpora principios básicos de seguridad como el hash de contraseñas, límite de intentos y tiempo de bloqueo. Esto demuestra cómo implementar mecanismos de seguridad a nivel hardware.
+
+    \item \textbf{Retroalimentación visual}: La integración de la salida VGA proporciona una interfaz visual inmediata del estado del sistema, complementando la comunicación serie tradicional.
+\end{enumerate}
+
+
 \end{document}
