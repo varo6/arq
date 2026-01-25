@@ -72,9 +72,14 @@ El sistema integra varios componentes:
 
 El funcionamiento general es el siguiente: el sistema muestra un mensaje de bienvenida, el cual está incluido en la ram. Espera la introducción de 4 caracteres por parte del usuario, los procesa con la función hash, compara el resultado con la contraseña almacenada (``HOLA'' hasheada, aunque podría ser cualquiera que se decida previamente a volcar el programa en la placa), y muestra el resultado tanto por el puerto serie como por la salida VGA. En caso de error, el usuario dispone de 3 intentos antes de que el sistema entre en un estado de bloqueo temporal de 5 segundos. Todo esto controlado por la máquina de estados.
 
-El direccionamiento de los puertos elegidos será el siguiente:
+El mapa E/S elegido contempla todas las salidas y entradas de los périféricos y comunicaciones con el PicoBlaze, por lo que podemos comunicar todos los resultados de manera eficiente:
 
-
+\begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=0.6\textwidth]{resources/img/bancoregistros.jpeg}
+ 	\caption{Mapa E/S}
+ 	\label{fig:bancoregistros}
+ \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Modificación de Arquitectura}
@@ -84,6 +89,11 @@ El direccionamiento de los puertos elegidos será el siguiente:
 
 Para implementar la función de hash se ha añadido una nueva instrucción al repertorio del PicoBlaze denominada \texttt{HASHER}. Esta instrucción recibe los mismos parámetros del flip, ya que toma un operando de 8 bits y produce un resultado de 8 bits mediante una serie de transformaciones combinacionales, pero no es lineal, la finalidad es de ofuscar al máximo posible la contraseña de forma que el picoblaze pueda actuar como una especie de \textit{caja negra}, donde no se pueda extraer la contraseña ni interpretar las operaciones de ninguna forma.
 
+Para que el PicoBlaze lo entienda como instrucción en cualquier parte del sistema ha hecho falta modificar partes esenciales como el código fuente del parser, que recoge todas las instrucciones que el PicoBlaze debe saber. Para ello, en zonas como la lista de instrucciones, el número total o declaración de operandos de entrada y de salida, se añadió todo lo relacionado con el \texttt{HASHER}.
+
+Es importante saber que aunque el parser compile bien (se ha tenido que generar un nuevo ejecutable tras la modificación, ya que tiene otro código fuente), o se haga el parseo de los archivos \texttt{.asm} correctamente, esto no significa que la instrucción esté programada correctamente, pero comprueba que los operandos tengan sentido, que todo tenga consistencia y que no haya fallos cuando en el ensamblador se encuentre una llamada a \texttt{HASHER}. Aunque ya esté dentro del PicoBlaze, hay que programar su funcionamiento.
+
+\subsection{Orden y lógica de la instrucción}
 
 \begin{figure}[H]
  	\centering
@@ -216,14 +226,14 @@ Estos márgenes permiten que el haz de electrones (en CRT) o los controladores L
 El diseño implementa los siguientes parámetros de temporización:
 
 \begin{itemize}
-    \item \textbf{Horizontal}: 
+    \item \textbf{Horizontal}:
     \begin{itemize}
         \item Total: 794 píxeles por línea (0-793)
         \item Área visible: 640 píxeles (0-639)
         \item Pulso de sincronía: píxeles 649-746 (96 píxeles de ancho, nivel bajo)
         \item Inhibición de color: activa después del píxel 639
     \end{itemize}
-    
+
     \item \textbf{Vertical}:
     \begin{itemize}
         \item Total: 528 líneas por frame (0-527)
@@ -239,7 +249,7 @@ El módulo \texttt{vga} utiliza dos contadores independientes:
 
 \begin{enumerate}
     \item \textbf{Contador de píxeles}: Incrementa con cada ciclo de reloj de 25 MHz, cuenta de 0 a 793, resetea y genera pulso de incremento para el contador de líneas.
-    
+
     \item \textbf{Contador de líneas}: Incrementa al finalizar cada línea (cuando el contador de píxeles alcanza el valor 746), cuenta de 0 a 527.
 \end{enumerate}
 
@@ -253,9 +263,9 @@ El módulo \texttt{vga\_inter} actúa como interfaz entre el controlador VGA bas
 
 \begin{enumerate}
     \item \textbf{Generación de reloj de 25 MHz}: Divide por 2 el reloj de entrada (50 MHz) mediante un flip-flop toggle para proporcionar el pixel clock al módulo VGA base.
-    
+
     \item \textbf{Captura de estado del sistema}: Lee el estado actual desde el puerto \texttt{0xDD} del bus PicoBlaze cuando se activa \texttt{read\_strobe}, almacenándolo en un registro interno.
-    
+
     \item \textbf{Generación de color}: Selecciona el color RGB de 3 bits basándose en el estado actual del sistema y la posición del píxel, respetando la señal de inhibición.
 \end{enumerate}
 
@@ -271,46 +281,71 @@ La aplicación utiliza tres colores para retroalimentación visual al usuario:
 
 Esta codificación de 1 bit por canal de color es una limitación del hardware de la placa Spartan-3E, que solo proporciona control on/off para cada canal RGB, permitiendo 8 colores totales.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Máquina de Estados}
 
-El módulo \texttt{estados} implementa una máquina de estados finita (FSM) que controla el flujo del sistema de autenticación.
+\subsection{Propósito y Diagnóstico Físico de la FSM}
 
-\subsection{Estados definidos}
+La FSM (implementada en \texttt{modulo\_estados.vhd}) es el componente de control de nivel superior. Su función es gestionar el ciclo de vida de la seguridad, decidiendo cuándo el sistema es accesible y cuándo debe bloquearse para protegerse contra ataques de fuerza bruta.
 
-\begin{enumerate}
-    \item \textbf{estado\_bloqueo}: Estado inicial y de penalización. El sistema permanece bloqueado durante 5 segundos (250 millones de ciclos a 50 MHz).
-    \item \textbf{estado\_escucha}: El sistema está listo para recibir intentos de autenticación.
-    \item \textbf{estado\_error1}: Primer intento fallido. Quedan 2 intentos.
-    \item \textbf{estado\_error2}: Segundo intento fallido. Queda 1 intento.
-    \item \textbf{estado\_error3}: Tercer intento fallido. Transición automática a bloqueo.
-    \item \textbf{estado\_bien}: Autenticación exitosa. Transición automática a bloqueo.
-\end{enumerate}
+La comprobación de su funcionamiento se realiza visualmente mediante el LED 6, el cual está conectado al bit de bloqueo de la FSM (\texttt{LED(6) <= mis\_estados(7);}).
 
-\subsection{Arquitectura de la FSM}
+    \begin{itemize}
+        \item \textit{Encendido}: El sistema está bloqueado por la FSM (penalización de 5 segundos tras 3 fallos o estado inicial de seguridad).
+        \item \textit{Apagado}: El sistema está en \texttt{estado\_escucha}, listo para recibir la contraseña.
+    \end{itemize}
 
-La máquina de estados sigue el patrón clásico de dos procesos:
+\subsection{Estados Definidos y Salidas Visuales}
 
-\subsubsection{Proceso síncrono}
-Gestiona la actualización del estado actual y el contador del temporizador. El contador solo avanza cuando el sistema está en estado de bloqueo.
+El sistema transita por 6 estados principales que condicionan el comportamiento del software y el color de la salida VGA:
 
-\subsubsection{Proceso combinacional}
-Determina el siguiente estado basándose en:
 \begin{itemize}
-    \item El estado actual.
-    \item Las señales de comunicación del PicoBlaze (\texttt{write\_strobe}, \texttt{port\_id}).
-    \item El valor recibido (\texttt{0x00} = acierto, \texttt{0xFF} = fallo).
-    \item El valor del temporizador (para salir del bloqueo).
+    \item \textbf{estado\_bloqueo} (\texttt{0x81}): Estado de penalización activado al iniciar o tras el tercer fallo. El bit 7 está activo, el LED 7 se enciende y la pantalla VGA se vuelve Roja (código \texttt{100}).
+
+    \item \textbf{estado\_escucha} (\texttt{0x01}): Reposo operativo donde el sistema está libre. El LED 7 se apaga y la pantalla VGA es Blanca (código \texttt{111}).
+
+    \item \textbf{estado\_error1} (\texttt{0x02}) y \textbf{estado\_error2} (\texttt{0x04}): Estados de advertencia tras intentos fallidos. Permiten más intentos, pero la FSM mantiene el registro de errores previos.
+
+    \item \textbf{estado\_error3}: Punto crítico tras el tercer fallo que provoca la transición automática a \texttt{estado\_bloqueo} por 5 segundos.
+
+    \item \textbf{estado\_bien} (\texttt{0x82}): Autenticación exitosa. La pantalla VGA se pone Verde (código \texttt{010}) y el sistema se asegura.
 \end{itemize}
 
-\subsection{Salidas}
+\subsection{Validación Técnica: Codificación por Bits}
 
-El módulo genera una salida de 8 bits (\texttt{out\_result}) que codifica el estado actual:
+Los valores de los estados en la señal \texttt{out\_result} (puerto \texttt{0xDD}) responden a una lógica de codificación por bits para optimizar la identificación mediante operaciones de máscara:
+
 \begin{itemize}
-    \item \texttt{0x81}: Estado de bloqueo (bit 7 activo indica bloqueo al software).
-    \item \texttt{0x01}: Estado de escucha.
-    \item \texttt{0x02}: Error 1.
-    \item \texttt{0x04}: Error 2.
+    \item \texttt{0x01} (Binario \texttt{00000001}): \texttt{estado\_escucha}. Bit 0 activo.
+    \item \texttt{0x02} (Binario \texttt{00000010}): \texttt{estado\_error1}. Bit 1 activo.
+    \item \texttt{0x04} (Binario \texttt{00000100}): \texttt{estado\_error2}. Bit 2 activo.
+    \item \texttt{0x81} (Binario \texttt{10000001}): \texttt{estado\_bloqueo}. El bit 7 está activo. En el código ASM se utiliza la instrucción \texttt{AND s0, 80} (\texttt{80} hex = \texttt{10000000} binario) para consultar exclusivamente este bit.
+    \item \texttt{0x82} (Binario \texttt{10000010}): \texttt{estado\_bien}. Indica éxito combinando el bit 1 (acierto) con el bit 7 (fin de proceso).
+\end{itemize}
+
+\subsection{Arquitectura de la máquina en VHDL}
+
+La FSM utiliza una arquitectura de doble proceso en VHDL:
+
+\begin{itemize}
+    \item \textbf{Proceso Síncrono}: Gestiona los cambios de estado con el reloj (\texttt{clk}) y controla el temporizador de 250 millones de ciclos para la penalización de 5 segundos.
+
+    \item \textbf{Proceso Combinacional}: Determina el siguiente estado evaluando el \texttt{port\_id} (\texttt{0xDD}) y el \texttt{write\_strobe}. Si el PicoBlaze escribe \texttt{0x00} (acierto) o \texttt{0xFF} (fallo), la FSM transita.
+\end{itemize}
+
+\subsection{Lógica de Máscara de Bits: Interconexión ASM vs. FSM}
+
+La diferencia entre los valores reportados por la FSM y la máscara utilizada en el código ensamblador es una técnica de diseño robusta para aislar el estado de bloqueo del resto de las funciones del sistema:
+
+\begin{itemize}
+    \item \textbf{Lógica de la FSM (Valor real)}: El periférico entrega estados completos a través del puerto \texttt{0xDD}, como \texttt{0x81} (bloqueo) o \texttt{0x82} (éxito). En ambos casos, el Bit 7 está a '1', lo que indica que el sistema se encuentra en un ``estado final'' o restrictivo que requiere la atención inmediata del hardware.
+
+    \item \textbf{Lógica del ASM (Máscara)}: El software utiliza la máscara \texttt{80} hex (\texttt{10000000} en binario) para filtrar la entrada del puerto. Su función es ignorar todos los bits secundarios (que indican sub-estados como \texttt{error1} o \texttt{error2}) y centrarse exclusivamente en el estado del Bit 7.
+
+    \item \textbf{Operación AND s0, 80}: Al aplicar esta máscara sobre el valor de la FSM, si el resultado es distinto de cero (NZ), el programa confirma que el Bit 7 está activo y ejecuta el bloqueo del flujo principal mediante la instrucción \texttt{JUMP NZ, start}.
+
+    \item \textbf{El Bit 7 como ``Master Lock''}: Este bit funciona como un interruptor maestro de seguridad. Mientras sea '1', el software se detiene por completo en un bucle de espera. Solo cuando la FSM libera el bloqueo (volviendo al estado de escucha \texttt{0x01}), el resultado de la operación AND es cero, permitiendo que el programa continúe con la ejecución normal.
 \end{itemize}
 
 Por lo que la estructura de la maquina de estados finita queda como:
@@ -318,7 +353,7 @@ Por lo que la estructura de la maquina de estados finita queda como:
 \begin{figure}[H]
  	\centering
  	\includegraphics[width=0.7\textwidth]{resources/img/fsm.jpeg}
- 	\caption{Diagrama del comparador combinacional.}
+ 	\caption{Estados de la FSM}
  	\label{fig:fsm}
  \end{figure}
 
@@ -326,56 +361,146 @@ Por lo que la estructura de la maquina de estados finita queda como:
 \chapter{Assembly}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+El programa de ensamblador controla la lógica y órdenes que vaya a dar el PicoBlaze sobre el sistema, gestionando la comunicación serie, la interacción con los periféricos hardware y la presentación de resultados al usuario.
 
-(POR MEJORAR)
+En ningún caso puede superar las 256 líneas de instrucciones, ya que usaremos un parseador para usarlo como una memoria del PicoBlaze, que va a determinar su funcionamiento. Por eso, el programa en ensamblador está limitado a la arquitectura 8 bits del PicoBlaze, como no poder enlazar muchas subrutinas o trabajar en menos de 256 instrucciones. Siendo varias las limitaciones, que trae, también es conveniente usarlo de esta forma, ya que se convierte en el ``orquestador'' de todos los périfericos: Recibe de este puerto, envia al otro, si un periférico envia cierto valor comunícalo con este puerto... Todo lo que haga pasará por el PicoBlaze.
 
-El programa en ensamblador coordina todo el sistema, gestionando la comunicación serie, la interacción con los periféricos hardware y la presentación de resultados al usuario.
+El programa se divide en varias secciones:
 
-\section{Estructura del programa}
+\subsection{Lógica de bloqueo}
+El programa comienza verificando si el sistema está en estado de bloqueo consultando el puerto de la FSM. Si el bit 7 está activo, el programa espera en un bucle constante hasta que el bloqueo termine.
 
+\begin{lstlisting}[caption={Rutina start}]
+start:
+    INPUT   s0, fsm_port
+    AND     s0, 80
+    JUMP    NZ, start
+    LOAD    S7,00
+\end{lstlisting}
 
+Tras esto, se activan las interrupciones y seguirá coprobando en un bucle de espera si debemos avanzar
 
-\subsection{Bucle principal}
-El programa comienza verificando si el sistema está en estado de bloqueo consultando el puerto de la FSM. Si el bit 7 está activo, el programa espera en un bucle hasta que el bloqueo termine.
+\begin{lstlisting}[caption={Bucle espera}]
+parte2:
+    ENABLE INTERRUPT        ; Activamos interrupcion para poder escribir
+bucle_espera:
+    ; Comprobamos constantemente si el hardware nos bloquea de repente
+    INPUT   s0, fsm_port
+    AND     s0, 80
+    JUMP    NZ, start       ; Si nos bloquean, saltamos al inicio (desactiva int)
+
+    JUMP    bucle_espera    ; Si no, seguimos esperando
+\end{lstlisting}
 
 Una vez libre, el programa:
 \begin{enumerate}
     \item Imprime un mensaje de bienvenida almacenado en RAM.
     \item Habilita las interrupciones.
-    \item Entra en un bucle de espera, verificando continuamente el estado de bloqueo.
+    \item Entra en un bucle de espera, verificando continuamente el estado de bloqueo o la próxima interrupción.
 \end{enumerate}
+
+El estado de bloqueo no siempre ocurre al inicio, por lo que también se debe controlar en otras partes. Es el caso de la rutina de interrupción, ya que sabemos que \textbf{todo lo que escribimos} salta en el programa a la interrupción, incluso en otros bucles si no la tienen desactivada, por eso es importante dentro de la interrupción comprobar que el estado sigue o no siendo bloqueado. Las primeras lineas de \texttt{interrup} tienen líneas similares a las de rutina start, donde compara el bloqueo, y si lo es, llamamos a \texttt{salir\_interrup} donde se creará otro bucle de bloqueo
+
+\begin{lstlisting}[caption={Bloquear interrupciones}]
+salir_interrup:
+    DISABLE INTERRUPT
+    INPUT   s0, fsm_port
+    AND     s0, 80
+    JUMP    NZ, salir_interrup
+    RETURNI     ENABLE
+
+    ADDRESS     FF
+    JUMP        interrup
+\end{lstlisting}
 
 \subsection{Rutina de interrupción}
 
-Cuando el usuario envía un carácter por el puerto serie, se dispara la interrupción. La rutina:
+Cuando el usuario envía un carácter por el puerto serie, se dispara la interrupción. Lo primero que hará será comprobar el estado de bloqueo, donde la FSM debe haber dejado algun valor válido que confirme que no esté bloqueado, y si es así, pasa a la lógica de la interrupción. Para empezar, se va a escuchar las cuatro letras necesarias para comparar la contraseña, pero como sabemos que está hasheada dentro del periférico, antes de enviarla al puerto correspondiente de cada char, se pasa por una rutina hashea. La rutina hashea hace lo siguiente:
 
-\begin{enumerate}
-    \item Deshabilita interrupciones para evitar reentrada.
-    \item Verifica que no estemos en bloqueo.
-    \item Recibe y hashea 4 caracteres consecutivos mediante la rutina \texttt{hashea}.
-    \item Envía cada carácter hasheado al módulo comparador (puertos \texttt{0xFE}-\texttt{0xFB}).
-    \item Lee el resultado de la comparación (puerto \texttt{0xFA}).
-    \item Comunica el resultado a la FSM (puerto \texttt{0xDD}) y a la VGA (puerto \texttt{0xEF}).
-    \item Muestra el mensaje correspondiente (``FELICIDADES'' o ``mal'').
-    \item Retorna habilitando las interrupciones.
-\end{enumerate}
 
-\subsection{Rutina hashea}
-
-Esta rutina encapsula el proceso de recibir un carácter, mostrar su eco por el puerto serie, y aplicar la instrucción \texttt{HASHER}:
+\newpage
 
 \begin{lstlisting}[caption={Rutina hashea}]
 hashea:
-    CALL    recibe          ; Recibe caracter
-    LOAD    txreg, rxreg    ; Copia para eco
-    CALL    transmite       ; Envia eco
-    HASHER  rxreg           ; Aplica hash
+    CALL    recibe
+    LOAD    txreg, rxreg
+    CALL    transmite
+    HASHER  rxreg
     RETURN
+\end{lstlisting}
+
+
+Lo primero que hará será imprimir por pantalla el caracter que se recibe, ya que de forma contraria, el usuario no tendría forma de comprobar si se está enviando su input. Después, llama a la instrucción \texttt{HASHER} que previamente se ha implementado para modificar la char y vuelve a donde se llamó. Contiene las instrucciones necesarias para un bucle entero de recibo letra, envío, y hasheo, por lo que se llamará 4 veces y se añadirá cada vez al puerto correspondiente:
+
+\begin{lstlisting}[caption={Hashea chars y envia al puerto}]
+CALL        hashea
+OUTPUT      rxreg, FE
+
+CALL        hashea
+OUTPUT      rxreg, FD
+
+CALL        hashea
+OUTPUT      rxreg, FC
+
+CALL        hashea
+OUTPUT      rxreg, FB
+
+call        wait_05bit
+\end{lstlisting}
+
+Tras los valores hasheados introducidos en sus puertos correspondientes, se espera que el periférico encargado de comparar las letras haya hecho su trabajo y haya guardado el valor correspondiente en el puerto \texttt{0xFA}, por lo que se lee el valor que existe:
+
+\begin{lstlisting}[caption={Recibir resultado XOR}]
+INPUT       rxreg, FA
+\end{lstlisting}
+
+Y el resultado, sea bien o mal, se envía a los periféricos que trabajarán con este valor: la máquina de estados y el vga
+
+\begin{lstlisting}[caption={Comunicación de resultados a FSM y VGA}]
+OUTPUT      rxreg, DD  ;puerto fsm
+OUTPUT      rxreg, EF  ;puerto vga
+\end{lstlisting}
+
+Aunque la máquina de estados esté contando los errores, también se hace una pequeña comparación sobre el valor que viene del periférico que compara y según si es el correcto o no, se llama a \texttt{rutinabien} o \texttt{rutinamal}, que imprimirán un mensaje de felicitación o de que no es correcta la palabra. Ambas harán uso de otra rutina creada llamada \texttt{saltolinea}, donde enviará por el puerto serie los valores que hyperterminal interpreta como el salto de línea.
+
+\begin{lstlisting}[caption={Rutinas saltolinea y rurinamal}]
+saltolinea:
+    LOAD    txreg,0D        ; CR
+    CALL    transmite
+    LOAD    txreg,0A        ; LF
+    CALL    transmite
+    RETURN
+
+rutinamal:
+    CALL    saltolinea
+    LOAD    txreg,4D        ; 'm'
+    CALL    transmite
+    LOAD    txreg,41        ; 'a'
+    CALL    transmite
+    LOAD    txreg,4C        ; 'l'
+    CALL    transmite
+    CALL    saltolinea
+    CALL    transmite
+
+    JUMP    fin
+\end{lstlisting}
+
+\subsection{El ``beep''}
+La \texttt{rutinabien}, además de imprimir un \texttt{FELICIDADES!!} de forma similar a la de rutinamal, enviará un sonido al puerto serie. Esta funcionalidad adicional se ha hecho buscando qué valor podría hyperterminal detectar como un sonido, y se econtró que el hexadecimal \texttt{07} se puede usar para que hyperterminal le mande un sonido de aviso al Windows que lo esté ejecutando. Por lo que el inicio de rutinabien, si se ha acertado la palabra, emite el sonido:
+
+
+\begin{lstlisting}[caption={Emitir sonido mediante ASM}]
+rutinabien:
+   LOAD    txreg, 07       ; Valor del beep
+   CALL    transmite
+   ...
+   (resto de rutinabien)
+   ...
 \end{lstlisting}
 
 \subsection{Comunicación serie}
 
-Las rutinas \texttt{recibe} y \texttt{transmite} implementan comunicación serie por software (bit-banging) a 9600 baudios. Utilizan temporizaciones precisas mediante las rutinas \texttt{wait\_1bit} y \texttt{wait\_05bit}.
+Las rutinas \texttt{recibe} y \texttt{transmite} implementan comunicación serie por software (bit-banging) a 9600 baudios. Utilizan temporizaciones mediante las rutinas \texttt{wait\_1bit} y \texttt{wait\_05bit}. Están hechas por los profesores en las prácticas de clase y hemos decidido no tocarlas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Extras}
