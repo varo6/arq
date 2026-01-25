@@ -71,12 +71,15 @@ signal linea_cont: unsigned(9 downto 0);
 
 signal inhibicion_color_inter_int: std_logic;
 signal estado_actual: std_logic_vector(7 downto 0);
+
+signal half_clk: std_logic;
+
 begin
 
 	modulo_vga: vga
 	port map(
 				reset => reset,
-				enable_25Mhz => enable_25Mhz,
+				enable_25Mhz => half_clk,
 				sinc_h	=> sinc_h,
 				sinc_v	=> sinc_v,
 				pixel_cont => pixel_cont,
@@ -85,13 +88,25 @@ begin
 				);
 				
 				
+-- Genera un reloj de 25 MHz a partir del reloj base de 50Mhz
 
--- Captura el estado desde el bus Picoblaze
 process (reset, enable_25Mhz)
 begin
 	if (reset = '1') then
+		half_clk <= '0';
+	else
+		if (rising_edge(enable_25Mhz)) then
+			half_clk <= not half_clk;
+		end if;
+	end if;
+end process;
+
+-- Captura el estado desde el bus Picoblaze
+process (reset, half_clk)
+begin
+	if (reset = '1') then
 		estado_actual <= "10000000"; -- Estado inicial de bloqueo
-	elsif rising_edge(enable_25Mhz) then
+	elsif rising_edge(half_clk) then
 		if (read_strobe = '1' and port_id = x"DD") then
 			estado_actual <= outport;
 		end if;
@@ -99,7 +114,7 @@ begin
 end process;
 
 -- Escritura en VGA
-process (reset,enable_25Mhz) 
+process (reset,half_clk) 
 	begin 
 		if (reset = '1') then
 			VGA_out_inter <= (others => '0');
@@ -110,7 +125,7 @@ process (reset,enable_25Mhz)
 			
 			-- la escritura de la VGA es secuencial va desde (0,0) hasta (640,480) uno por uno, de derecha a izquirda, de arriba a abajo.
 
-		elsif rising_edge(enable_25Mhz) then
+		elsif rising_edge(half_clk) then
 		
 		-- VERIFICAMOS AQUI LAS RESTRICCIONES para poder pintar por pantalla
 		

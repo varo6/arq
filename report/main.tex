@@ -180,37 +180,96 @@ Si todos los resultados XOR son cero (es decir, todos los caracteres coinciden),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{VGA}
 
-La interfaz VGA se implementa mediante dos módulos: \texttt{vga} (controlador base) y \texttt{vga\_inter} (interfaz con el sistema).
+La interfaz VGA se implementa mediante dos módulos: \texttt{vga}, encargado de la correcta comunicación con el monitor y \texttt{vga\_inter} que actúa como interfaz entre el controlador VGA base y el sistema PicoBlaze.
+
+\subsection{Diseño del Hardware VGA}
+
+La placa Spartan-3E incluye un puerto VGA mediante un conector DB15 que permite la conexión directa a monitores VGA estándar. El FPGA controla directamente las cinco señales VGA mediante resistores en serie:
+
+\begin{itemize}
+    \item \textbf{Señales de color}: VGA\_RED (H14), VGA\_GREEN (H15), VGA\_BLUE (G15) - cada una con un bit de profundidad.
+    \item \textbf{Señales de sincronización}: VGA\_HSYNC (F15), VGA\_VSYNC (F14) - niveles LVTTL.
+\end{itemize}
+
+Los resistores en serie de 270$\Omega$ en combinación con la terminación de 75$\Omega$ del cable VGA aseguran que las señales de color permanezcan en el rango especificado de 0V a 0.7V. Con 3 bits (uno por color), el sistema puede generar 8 colores diferentes.
 
 \subsection{Módulo VGA Base}
 
-El módulo \texttt{vga} genera las señales de sincronización horizontal y vertical necesarias para una resolución de 640x480 píxeles a 60 Hz.
+El módulo \texttt{vga} implementa el controlador de temporización VGA siguiendo el estándar VESA para resolución 640x480 a 60 Hz.
 
-\subsubsection{Parámetros de temporización}
+\subsubsection{Decisiones de Diseño}
+
+\paragraph{Frecuencia de reloj pixel:} Se utiliza un reloj de 25 MHz, obtenido dividiendo el reloj del sistema (50 MHz) por 2. Esta frecuencia es el estándar para modo VGA 640x480@60Hz, calculada como:
+$$\text{Pixel Clock} = 794 \times 528 \times 60 \text{ Hz} \approx 25.175 \text{ MHz}$$
+
+\paragraph{Dimensionamiento del frame:} Se configuró la pantalla a 794$\times$528 píxeles totales en lugar de solo 640$\times$480 para incluir los intervalos de blanking necesarios:
+
 \begin{itemize}
-    \item \textbf{Horizontal}: 794 píxeles totales por línea, con pulso de sincronía entre los píxeles 649 y 746.
-    \item \textbf{Vertical}: 528 líneas totales por frame, con pulso de sincronía entre las líneas 489 y 491.
-    \item \textbf{Área visible}: 640x480 píxeles (antes de los límites de inhibición).
+    \item \textbf{Blanking horizontal}: Los píxeles 640-793 no son visibles e incluyen el front porch, sync pulse y back porch.
+    \item \textbf{Blanking vertical}: Las líneas 480-527 no son visibles e incluyen los intervalos verticales de sincronización.
 \end{itemize}
 
-El módulo utiliza un reloj de 25 MHz (habilitado mediante la señal \texttt{enable\_25Mhz}) para generar el timing correcto.
+Estos márgenes permiten que el haz de electrones (en CRT) o los controladores LCD tengan tiempo de retornar a la posición inicial antes de comenzar la siguiente línea o frame.
+
+\subsubsection{Parámetros de Temporización}
+
+El diseño implementa los siguientes parámetros de temporización:
+
+\begin{itemize}
+    \item \textbf{Horizontal}: 
+    \begin{itemize}
+        \item Total: 794 píxeles por línea (0-793)
+        \item Área visible: 640 píxeles (0-639)
+        \item Pulso de sincronía: píxeles 649-746 (96 píxeles de ancho, nivel bajo)
+        \item Inhibición de color: activa después del píxel 639
+    \end{itemize}
+    
+    \item \textbf{Vertical}:
+    \begin{itemize}
+        \item Total: 528 líneas por frame (0-527)
+        \item Área visible: 480 líneas (0-479)
+        \item Pulso de sincronía: líneas 489-491 (2 líneas de ancho, nivel bajo)
+        \item Inhibición de color: activa después de la línea 479
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Arquitectura Interna}
+
+El módulo \texttt{vga} utiliza dos contadores independientes:
+
+\begin{enumerate}
+    \item \textbf{Contador de píxeles}: Incrementa con cada ciclo de reloj de 25 MHz, cuenta de 0 a 793, resetea y genera pulso de incremento para el contador de líneas.
+    
+    \item \textbf{Contador de líneas}: Incrementa al finalizar cada línea (cuando el contador de píxeles alcanza el valor 746), cuenta de 0 a 527.
+\end{enumerate}
+
+Las señales de sincronización se generan mediante comparadores que detectan las ventanas temporales correspondientes. La señal de inhibición de color se activa (OR lógico) cuando el contador de píxeles supera 639 O el contador de líneas supera 479, bloqueando la salida de color durante los períodos de blanking.
 
 \subsection{Módulo VGA Inter}
 
-El módulo \texttt{vga\_inter} actúa como interfaz entre el controlador VGA base y el sistema PicoBlaze. Su función principal es:
+El módulo \texttt{vga\_inter} actúa como interfaz entre el controlador VGA base y el sistema PicoBlaze, implementando la lógica de visualización específica de la aplicación.
+
+\subsubsection{Funcionalidad}
 
 \begin{enumerate}
-    \item Instanciar el módulo VGA base.
-    \item Capturar el estado actual del sistema desde el bus del PicoBlaze (puerto \texttt{0xDD}).
-    \item Generar el color de salida según el estado de la máquina de estados.
+    \item \textbf{Generación de reloj de 25 MHz}: Divide por 2 el reloj de entrada (50 MHz) mediante un flip-flop toggle para proporcionar el pixel clock al módulo VGA base.
+    
+    \item \textbf{Captura de estado del sistema}: Lee el estado actual desde el puerto \texttt{0xDD} del bus PicoBlaze cuando se activa \texttt{read\_strobe}, almacenándolo en un registro interno.
+    
+    \item \textbf{Generación de color}: Selecciona el color RGB de 3 bits basándose en el estado actual del sistema y la posición del píxel, respetando la señal de inhibición.
 \end{enumerate}
 
-\subsubsection{Codificación de colores}
+\subsubsection{Codificación de Colores}
+
+La aplicación utiliza tres colores para retroalimentación visual al usuario:
+
 \begin{itemize}
-    \item \textbf{Estado de bloqueo con error} (\texttt{0x81}): Pantalla ROJA (\texttt{100}).
-    \item \textbf{Estado de bloqueo acertado} (\texttt{0x82}): Pantalla VERDE (\texttt{010}).
-    \item \textbf{Resto de estados}: Pantalla BLANCA (\texttt{111}).
+    \item \textbf{ROJO} (\texttt{100}): Estado de bloqueo con error (\texttt{0x81}) - indica contraseña incorrecta.
+    \item \textbf{VERDE} (\texttt{010}): Estado de bloqueo acertado (\texttt{0x82}) - indica contraseña correcta.
+    \item \textbf{BLANCO} (\texttt{111}): Todos los demás estados - indica sistema en espera de entrada.
 \end{itemize}
+
+Esta codificación de 1 bit por canal de color es una limitación del hardware de la placa Spartan-3E, que solo proporciona control on/off para cada canal RGB, permitiendo 8 colores totales.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Máquina de Estados}
