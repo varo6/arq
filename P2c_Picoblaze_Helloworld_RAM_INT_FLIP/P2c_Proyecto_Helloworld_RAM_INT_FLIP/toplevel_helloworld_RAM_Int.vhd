@@ -44,7 +44,7 @@ architecture behavioral of toplevel is
 -----------------------------------------------------------------
 -- declaraci�n de la ROM de programa
 -----------------------------------------------------------------
-  component pruebanuevo
+  component rom_picoblaze
     Port (      address : in std_logic_vector(7 downto 0);
             		   dout : out std_logic_vector(15 downto 0);
                     clk : in std_logic);
@@ -172,7 +172,7 @@ begin
                      reset => reset,
                        clk => clk);
 
-  program: pruebanuevo
+  program: rom_picoblaze
     port map(     address => address,
                	     dout => instruction,
                       clk => clk);

@@ -2,13 +2,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-entity pruebanuevo is
+entity rom_picoblaze is
 	port( address : in std_logic_vector(7 downto 0);
 		clk : in std_logic;
 		dout : out std_logic_vector(15 downto 0));
 	end;
 
-architecture v1 of pruebanuevo is
+architecture v1 of rom_picoblaze is
 
 	constant ROM_WIDTH: INTEGER:= 16;
 	constant ROM_LENGTH: INTEGER:= 256;

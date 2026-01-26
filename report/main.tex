@@ -10,6 +10,10 @@
 \usepackage{packages/sleek-listings}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\hypersetup{
+    linkcolor=black,
+    linktoc=all
+}
 \usepackage{listings}
 \usepackage{longtable}
 \usepackage{array}
@@ -503,10 +507,18 @@ rutinabien:
 Las rutinas \texttt{recibe} y \texttt{transmite} implementan comunicación serie por software (bit-banging) a 9600 baudios. Utilizan temporizaciones mediante las rutinas \texttt{wait\_1bit} y \texttt{wait\_05bit}. Están hechas por los profesores en las prácticas de clase y hemos decidido no tocarlas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Extras}
+\chapter{Extra de software: el ``picowifi''}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-aqui pongo la gilipollez del picowifi con la foto o un video o yo q se
+Como integración de software, se ha añadido una funcionalidad extra que se ha decidido llamar como el ``picowifi'', ya que conseguimos exponer una api a internet que está conectada a la placa, haciendo posible la interacción (envío y recibo de letras) con el PicoBlaze desde cientos de kilómetros de distancia, siempre y cuando tenga internet.
+
+La tecnología detrás viene por un programa hecho en \texttt{Rust}, que se comunica con la api interna de windows haciendo posible la transmisión al pueto serie. Al compilar, exponemos esa conexión interna en el puerto 3000. Los ordenadores del aula no tienen posibilidad de exponer un puerto, por lo cual se requiere un \texttt{workaround} para conseguir esa conexión a internet. Para ello, se usa un \texttt{cloudflare tunnel} conectado a ese puerto 3000 y un dominio específico.
+
+Un \texttt{Cloudflare Tunnel} es un servicio que permite conectar de forma segura servidores, aplicaciones o redes privadas a la red de Cloudflare sin necesidad de exponer puertos públicos ni configurar firewalls. Cloudflared inicia conexiones salientes hacia los edge servers de usando QUIC (UDP/443) o HTTP/2 (TCP/443). Como son conexiones de salida, atraviesan NAT y firewalls sin configuración adicional. Como un ``handshake'' entre los ordenadores del laboratorio y los servidores de hardware. Una vez hecho, el tráfico TCP se encapsula dentro de streams. Cada conexión TCP del cliente se convierte en un stream independiente dentro del túnel. Cloudflare hace de ``proxy TCP'' transparente. Esto crea un listener local en el cliente que tuneliza el tráfico. Permite integrar autenticación Zero Trust y cifrado extremo a extremo, finalmente, desde la parte de cloudflare, nos permite elegir un dominio propio. 
+
+Finalmente, tendremos la conexión de una api expuesta del puerto local 3000 a un dominio de internet, que se conecta con la api interna al puerto serial y envía palabras al PicoBlaze.
+
+Se adjunta un vídeo del funcionamiento, donde con el movil se envía por internet la palabra a la placa, y el PicoBlaze responde correctamente con la respuesta.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusiones}
